@@ -1,0 +1,14 @@
+//Items
+item.Geigar_Counter.name=Geigar Counter
+item.Radiation_Badge.name=Radiation Badge
+item.Hazmat_Swatch.name=Hazmat Swatch
+
+//Blocks
+tile.Wasteland_Block.name=Wasteland Block
+tile.Leadlined_Block.name=Lead Lined Block
+
+//Armors
+item.Hazmat_Suit.name=Hazmat Suit
+item.Hazmat_Boots.name=Hazmat Boots
+item.Hazmat_Leggings.name=Hazmat Leggings
+item.Hazmat_Helmet.name=Hazmat Helmet
