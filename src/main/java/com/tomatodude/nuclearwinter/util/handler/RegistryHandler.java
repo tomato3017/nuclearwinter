@@ -1,5 +1,6 @@
 package com.tomatodude.nuclearwinter.util.handler;
 
+import com.tomatodude.nuclearwinter.NuclearWinter;
 import com.tomatodude.nuclearwinter.init.ModBlocks;
 import com.tomatodude.nuclearwinter.init.ModItems;
 import com.tomatodude.nuclearwinter.util.IHasModel;
@@ -15,11 +16,14 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class RegistryHandler {
 	@SubscribeEvent
 	public static void onItemRegister(RegistryEvent.Register<Item> event) {
-		event.getRegistry().registerAll(ModItems.ITEMS.toArray(new Item[0]));
+		NuclearWinter.logger.info("Registering Items");
+		ModItems.registerItems(event);
 	}
+
 	@SubscribeEvent
 	public static void onBlockRegister(RegistryEvent.Register<Block> event) {
-		event.getRegistry().registerAll(ModBlocks.BLOCKS.toArray(new Block[0]));
+		NuclearWinter.logger.info("Registering Blocks");
+		ModBlocks.registerItems(event);
 	}
 	
 	@SubscribeEvent
