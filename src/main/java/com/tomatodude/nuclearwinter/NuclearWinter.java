@@ -1,5 +1,6 @@
 package com.tomatodude.nuclearwinter;
 
+import com.tomatodude.nuclearwinter.init.ModItems;
 import com.tomatodude.nuclearwinter.init.ModRecipes;
 import com.tomatodude.nuclearwinter.proxy.CommonProxy;
 import com.tomatodude.nuclearwinter.util.Reference;
@@ -11,9 +12,9 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 
 @Mod(modid = Reference.MOD_ID,name = Reference.NAME, version = Reference.VERSION)
 public class NuclearWinter {
@@ -23,16 +24,15 @@ public class NuclearWinter {
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS,serverSide = Reference.COMMON_PROXY_CLASS)
 	public static CommonProxy proxy;
 
-	public static final Logger logger = LogManager.getLogger(Reference.MOD_ID);
-	
+	public static final Logger logger = LogManager.getLogger(Reference.NAME);
+
 	@EventHandler
 	public static void PreInit(FMLPreInitializationEvent event) {
-
+		logger.info(Reference.NAME + " v" + Reference.VERSION + " Initializing!");
 	}
 
 	@EventHandler
 	public static void init(FMLInitializationEvent event) {
-		logger.info("Initializing " + Reference.NAME + " v" + Reference.VERSION);
 		ModRecipes.init();
 	}
 
