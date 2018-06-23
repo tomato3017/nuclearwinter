@@ -26,10 +26,13 @@ public class ModItems {
 	public static final Item HAZMAT_SWATCH = new ItemBase("Hazmat_Swatch");
 	public static final Item RADIATION_BADGE = new ItemBase("Radiation_Badge");
 	public static final Item GEIGAR_COUNTER = new ItemBase("Geigar_Counter");
+
 	//Armor
 	public static final Item HAZMAT_SUIT = new ArmorBase("Hazmat_Suit",MATERIAL_HAZMAT_SWATCH,1,EntityEquipmentSlot.CHEST);
 	public static final Item HAZMAT_HELMET = new ArmorBase("Hazmat_Helmet",MATERIAL_HAZMAT_SWATCH,1,EntityEquipmentSlot.HEAD);
 	public static final Item HAZMAT_BOOTS = new ArmorBase("Hazmat_Boots",MATERIAL_HAZMAT_SWATCH,1,EntityEquipmentSlot.FEET);
 	public static final Item HAZMAT_LEGGINS = new ArmorBase("Hazmat_Leggings",MATERIAL_HAZMAT_SWATCH,2,EntityEquipmentSlot.LEGS);
-	
+
+	//Debug
+	public static final Item RADIATION_DEBUGGER = new ItemBase("Radiation_Debugger");
 }
