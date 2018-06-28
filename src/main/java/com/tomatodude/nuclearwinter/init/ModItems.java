@@ -2,11 +2,9 @@ package com.tomatodude.nuclearwinter.init;
 
 import com.tomatodude.nuclearwinter.NuclearWinter;
 import com.tomatodude.nuclearwinter.items.ItemBase;
+import com.tomatodude.nuclearwinter.items.ItemRadiationDebugger;
 import com.tomatodude.nuclearwinter.items.armor.ArmorBase;
 import com.tomatodude.nuclearwinter.util.Reference;
-
-import java.util.ArrayList;
-
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
@@ -37,7 +35,7 @@ public class ModItems {
 	public static final Item HAZMAT_LEGGINS = new ArmorBase("Hazmat_Leggings",MATERIAL_HAZMAT_SWATCH,2,EntityEquipmentSlot.LEGS);
 
 	//Debug
-	public static final Item RADIATION_DEBUGGER = new ItemBase("Radiation_Debugger");
+	public static final Item RADIATION_DEBUGGER = new ItemRadiationDebugger();
 
     public static void registerItems(RegistryEvent.Register<Item> event){
         for (Item i : ITEMS) {

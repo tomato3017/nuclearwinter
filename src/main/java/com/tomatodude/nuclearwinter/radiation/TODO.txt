@@ -1,0 +1,2 @@
+TODO still need to do effects
+TODO player tick handler applying the radiation to the player
