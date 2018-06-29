@@ -47,12 +47,12 @@ public class RadiationController {
             if(blockState.getBlock() != Blocks.AIR){
                 RadBlockSetting radResist = RadBlockSetting.getResistanceOfBlock(blockState, world, currentBlockPos);
                 float degradedBlockResistance = getDegradedBlockResistance(radResist.getBlockResistance(),blockLightDegradeFactor);
-                NuclearWinter.logger.info(radResist.getBlockName() + " Resistance: " + degradedBlockResistance);
+                NuclearWinter.logger.debug(radResist.getBlockName() + " Resistance: " + degradedBlockResistance);
                 float radiationResisted = getRadResisted(radResist.getBlockResistance(), currentRadLevel);
 
                 //Check if the block degrades, if it does see if the radiation resisted is higher then where it degrades
                 if(settings.isDegradeBlocks() && radResist.isBlockDegrade() &&
-                        radiationResisted > radResist.getBlockDegradationLevel() && !settings.isPlayerEffected()){
+                        radiationResisted > radResist.getBlockDegradationLevel()){
                     IBlockState degradedBlockState = radResist.getBlockDegradedState();
                     world.setBlockState(currentBlockPos,degradedBlockState,3);
                 }

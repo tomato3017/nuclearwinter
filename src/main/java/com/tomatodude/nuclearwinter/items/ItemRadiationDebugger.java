@@ -3,7 +3,9 @@ package com.tomatodude.nuclearwinter.items;
 import com.tomatodude.nuclearwinter.radiation.RadiationController;
 import com.tomatodude.nuclearwinter.radiation.RadiationSettings;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
@@ -37,6 +39,7 @@ public class ItemRadiationDebugger extends ItemBase {
                 BlockPos bp = new BlockPos((int) playerIn.posX, (int) playerIn.posY, (int) playerIn.posZ);
                 playerIn.sendMessage(new TextComponentString("Current Rad level is " + test));
                 playerIn.sendMessage(new TextComponentString(String.valueOf(worldIn.getChunkFromBlockCoords(bp).getLightFor(EnumSkyBlock.SKY, bp))));
+                playerIn.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS,200));
 
             }
 
