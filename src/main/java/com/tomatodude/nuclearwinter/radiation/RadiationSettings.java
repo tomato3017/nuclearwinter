@@ -4,6 +4,7 @@ public class RadiationSettings {
 
     private boolean playerEffected = false;
     private boolean degradeBlocks = true;
+    private boolean blockLightDegradation = false;
 
     private float startRadLevel;
 
@@ -36,4 +37,15 @@ public class RadiationSettings {
         this.startRadLevel = startRadLevel;
     }
 
+    public boolean isBlockLightDegradation() {
+        if(isPlayerEffected()){
+            return true;
+        } else {
+            return blockLightDegradation;
+        }
+    }
+
+    public void setBlockLightDegradation(boolean blockLightDegradation) {
+        this.blockLightDegradation = blockLightDegradation;
+    }
 }

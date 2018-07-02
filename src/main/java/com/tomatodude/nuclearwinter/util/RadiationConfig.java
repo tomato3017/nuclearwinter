@@ -5,14 +5,29 @@ import com.tomatodude.nuclearwinter.radiation.RadBlockSetting;
 import java.util.HashMap;
 
 //TODO: Load from config file
+//TODO: Balance all this
 public class RadiationConfig {
     public static final int RAD_MAX_LIGHT_LEVEL = 12;
+
+    //Default Block resistances.
     public static final float BLOCK_RESIST_HARD_LOW = 16.0f;
     public static final float BLOCK_RESIST_HARD_MED = 128.0f;
     public static final float BLOCK_RESIST_HARD_HIGH = 230.0f;
+
+    //Radiation Damage
+    public static final int RADIATION2_DAMAGE = 1;
+    public static final int RADIATION3_DAMAGE = 4;
+
+    //Rad level that the user gets radiation at.
+    public static final float RADIATION3_RAD_LEVEL = 500000;
+    public static final float RADIATION2_RAD_LEVEL = 100000;
+    public static final float RADIATION1_RAD_LEVEL = 5000;
+
+    //Stores custom radiation settings
     private static HashMap<String, RadBlockSetting> radiationMap;
 
-    public static final int RAD_SKY_DEGRADE_FACTOR = 96;
+
+    public static final int RAD_BLOCK_LIGHT_DEGRADE_FACTOR = 96;
 
 
     public static void initRadMap(){

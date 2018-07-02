@@ -1,5 +1,6 @@
 package com.tomatodude.nuclearwinter;
 
+import com.tomatodude.nuclearwinter.init.ModCapabilities;
 import com.tomatodude.nuclearwinter.init.ModRecipes;
 import com.tomatodude.nuclearwinter.proxy.CommonProxy;
 import com.tomatodude.nuclearwinter.util.RadiationConfig;
@@ -27,6 +28,7 @@ public class NuclearWinter {
 	@EventHandler
 	public static void PreInit(FMLPreInitializationEvent event) {
 		logger.info(Reference.NAME + " v" + Reference.VERSION + " Initializing!");
+		ModCapabilities.register();
 	}
 
 	@EventHandler

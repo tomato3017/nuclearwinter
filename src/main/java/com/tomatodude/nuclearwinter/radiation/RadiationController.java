@@ -4,18 +4,20 @@ import com.tomatodude.nuclearwinter.NuclearWinter;
 import com.tomatodude.nuclearwinter.util.RadiationConfig;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
+//TODO: Armor rad resistance
 public class RadiationController {
     public static final int MAX_RADIATION_LEVEL = 65535;
     public static final int SKY_RADIATION_START = 255;
+    public static final DamageSource RADIATION_DMG = new DamageSource("radiation").setDamageBypassesArmor();
 
     public static float getRadResisted(float blockResistance, float currentRadiation){
-        //Todo: Write this functionality
         float radDecreaseModifier = blockResistance/128*0.5f; //Radiation will be decreased by this amount.
 
         return currentRadiation*radDecreaseModifier;
@@ -47,6 +49,7 @@ public class RadiationController {
             if(blockState.getBlock() != Blocks.AIR){
                 RadBlockSetting radResist = RadBlockSetting.getResistanceOfBlock(blockState, world, currentBlockPos);
                 float degradedBlockResistance = getDegradedBlockResistance(radResist.getBlockResistance(),blockLightDegradeFactor);
+                //TODO: Remove
                 NuclearWinter.logger.debug(radResist.getBlockName() + " Resistance: " + degradedBlockResistance);
                 float radiationResisted = getRadResisted(radResist.getBlockResistance(), currentRadLevel);
 
@@ -58,7 +61,9 @@ public class RadiationController {
                 }
 
                 //Recalc for lighting post block degradation
-                radiationResisted = getRadResisted(degradedBlockResistance, currentRadLevel);
+                if(settings.isPlayerEffected() || settings.isBlockLightDegradation()) {
+                    radiationResisted = getRadResisted(degradedBlockResistance, currentRadLevel);
+                }
 
                 currentRadLevel = currentRadLevel - radiationResisted;
             }
@@ -98,7 +103,7 @@ public class RadiationController {
         Chunk chunk = world.getChunkFromBlockCoords(lightBlockPos);
         int lightLevel = chunk.getLightFor(EnumSkyBlock.SKY, lightBlockPos);
         if(lightLevel > RadiationConfig.RAD_MAX_LIGHT_LEVEL){
-            blockLightDegradeFactor = (1.0f/RadiationConfig.RAD_SKY_DEGRADE_FACTOR)*(lightLevel-RadiationConfig.RAD_MAX_LIGHT_LEVEL);
+            blockLightDegradeFactor = (1.0f/RadiationConfig.RAD_BLOCK_LIGHT_DEGRADE_FACTOR)*(lightLevel-RadiationConfig.RAD_MAX_LIGHT_LEVEL);
         }
         return blockLightDegradeFactor;
     }
