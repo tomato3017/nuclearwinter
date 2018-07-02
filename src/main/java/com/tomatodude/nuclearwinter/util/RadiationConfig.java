@@ -23,6 +23,11 @@ public class RadiationConfig {
     public static final float RADIATION2_RAD_LEVEL = 100000;
     public static final float RADIATION1_RAD_LEVEL = 5000;
 
+    //Max radiation allowed to be emitted //TODO: Make this stage dependent
+    public static final int MAX_RADIATION_LEVEL = 65535;
+    //Where radiation emitted from the sky starts
+    public static final int SKY_RADIATION_START = 255;
+
     //Stores custom radiation settings
     private static HashMap<String, RadBlockSetting> radiationMap;
 

@@ -13,8 +13,6 @@ import net.minecraft.world.chunk.Chunk;
 
 //TODO: Armor rad resistance
 public class RadiationController {
-    public static final int MAX_RADIATION_LEVEL = 65535;
-    public static final int SKY_RADIATION_START = 255;
     public static final DamageSource RADIATION_DMG = new DamageSource("radiation").setDamageBypassesArmor();
 
     public static float getRadResisted(float blockResistance, float currentRadiation){
@@ -82,7 +80,7 @@ public class RadiationController {
         radSetting.setDegradeBlocks(true);
         radSetting.setPlayerEffected(true);
 
-        Vec3d startPos = new Vec3d(targetPos.x, SKY_RADIATION_START, targetPos.z);
+        Vec3d startPos = new Vec3d(targetPos.x, RadiationConfig.SKY_RADIATION_START, targetPos.z);
 
         return emitRadiation(worldIn, startPos, targetPos, radSetting);
     }
@@ -113,6 +111,6 @@ public class RadiationController {
     }
 
     private static float getCurrentRadLevel() {
-        return MAX_RADIATION_LEVEL;
+        return RadiationConfig.MAX_RADIATION_LEVEL;
     }
 }

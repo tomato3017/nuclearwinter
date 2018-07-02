@@ -1,5 +1,7 @@
 package com.tomatodude.nuclearwinter.radiation;
 
+import com.tomatodude.nuclearwinter.util.RadiationConfig;
+
 public class RadiationSettings {
 
     private boolean playerEffected = false;
@@ -9,7 +11,7 @@ public class RadiationSettings {
     private float startRadLevel;
 
     public RadiationSettings() {
-        this.setStartRadLevel(RadiationController.MAX_RADIATION_LEVEL);
+        this.setStartRadLevel(RadiationConfig.MAX_RADIATION_LEVEL);
     }
 
     public boolean isPlayerEffected() {
