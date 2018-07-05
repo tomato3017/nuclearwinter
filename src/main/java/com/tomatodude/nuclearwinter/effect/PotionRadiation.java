@@ -11,6 +11,7 @@ import static com.tomatodude.nuclearwinter.util.Util.applyEffectIfReady;
 
 public class PotionRadiation extends Potion {
 
+    private int damageTickCounter = 0;
     public PotionRadiation(String name, String id, double effectiveness) {
         super(true, 0);
         setPotionName(name);
@@ -40,13 +41,14 @@ public class PotionRadiation extends Potion {
             } else {
                 applyBasicRadiationEffects(player);
             }
+            damageTickCounter++;
         }
     }
 
     public void damagePlayer(EntityPlayer player,int damage, long ticksBetween) {
-        long tick = player.getEntityWorld().getWorldTime();
-        if(tick%ticksBetween == 0){ //Apply every second
+        if(damageTickCounter >= ticksBetween){ //Apply every second
             player.attackEntityFrom(RadiationController.RADIATION_DMG,damage);
+            damageTickCounter = 0;
         }
     }
 

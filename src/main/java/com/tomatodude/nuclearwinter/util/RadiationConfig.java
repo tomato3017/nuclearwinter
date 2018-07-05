@@ -27,6 +27,13 @@ public class RadiationConfig {
     public static final int MAX_RADIATION_LEVEL = 65535;
     //Where radiation emitted from the sky starts
     public static final int SKY_RADIATION_START = 255;
+    public static final float PLAYER_NATURAL_RESISTANCE = 65;
+
+    //Armor Resistances
+    public static final float HAZMAT_BOOTS_RESISTANCE = 128;
+    public static final float HAZMAT_HELMET_RESISTANCE = 128;
+    public static final float HAZMAT_LEGS_RESISTANCE = 128;
+    public static final float HAZMAT_SUIT_RESISTANCE = 128;
 
     //Stores custom radiation settings
     private static HashMap<String, RadBlockSetting> radiationMap;

@@ -7,7 +7,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-//TODO: Work on this
 public class RadBlockSetting {
     private String blockName; //Block name
     private float blockResistance; //Block resistance 0-255

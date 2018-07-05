@@ -1,5 +1,16 @@
 package com.tomatodude.nuclearwinter.items.armor;
 
-public class HazmatSuit {
+import com.tomatodude.nuclearwinter.util.RadiationConfig;
+import net.minecraft.inventory.EntityEquipmentSlot;
 
+public class HazmatSuit extends ArmorBase{
+
+    public HazmatSuit(String name, ArmorMaterial materialIn, int renderIndexIn, EntityEquipmentSlot equipmentSlotIn) {
+        super(name, materialIn, renderIndexIn, equipmentSlotIn);
+    }
+
+    @Override
+    public float getRadResistance() {
+        return RadiationConfig.HAZMAT_SUIT_RESISTANCE;
+    }
 }

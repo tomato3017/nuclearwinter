@@ -1,9 +1,10 @@
 package com.tomatodude.nuclearwinter.radiation;
 
-import com.tomatodude.nuclearwinter.NuclearWinter;
 import com.tomatodude.nuclearwinter.util.RadiationConfig;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -11,12 +12,11 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 
-//TODO: Armor rad resistance
 public class RadiationController {
     public static final DamageSource RADIATION_DMG = new DamageSource("radiation").setDamageBypassesArmor();
 
-    public static float getRadResisted(float blockResistance, float currentRadiation){
-        float radDecreaseModifier = blockResistance/128*0.5f; //Radiation will be decreased by this amount.
+    public static float getRadResisted(float resistance, float currentRadiation){
+        float radDecreaseModifier = resistance/128*0.5f; //Radiation will be decreased by this amount.
 
         return currentRadiation*radDecreaseModifier;
     }
@@ -47,8 +47,6 @@ public class RadiationController {
             if(blockState.getBlock() != Blocks.AIR){
                 RadBlockSetting radResist = RadBlockSetting.getResistanceOfBlock(blockState, world, currentBlockPos);
                 float degradedBlockResistance = getDegradedBlockResistance(radResist.getBlockResistance(),blockLightDegradeFactor);
-                //TODO: Remove
-                NuclearWinter.logger.debug(radResist.getBlockName() + " Resistance: " + degradedBlockResistance);
                 float radiationResisted = getRadResisted(radResist.getBlockResistance(), currentRadLevel);
 
                 //Check if the block degrades, if it does see if the radiation resisted is higher then where it degrades
@@ -90,6 +88,7 @@ public class RadiationController {
         RadiationSettings radSetting = new RadiationSettings();
         radSetting.setDegradeBlocks(false);
         radSetting.setPlayerEffected(true);
+        radSetting.setBlockLightDegradation(false);
 
         return emitRadiation(worldIn, startPos, endPos, radSetting);
     }
@@ -106,6 +105,51 @@ public class RadiationController {
         return blockLightDegradeFactor;
     }
 
+    public static float getRadiationResistedByPlayer(EntityPlayer player, float currentRadiation, boolean damageArmor){
+        float radiationResisted = 0;
+        float radiationLeft = currentRadiation;
+
+        //Pull all the player's armor slots
+        Iterable<ItemStack> armorSet = player.getArmorInventoryList();
+        radiationResisted = getRadiationResistedByArmor(armorSet, currentRadiation, damageArmor);
+
+        radiationLeft = radiationLeft - RadiationConfig.PLAYER_NATURAL_RESISTANCE;
+        radiationResisted = radiationResisted + RadiationConfig.PLAYER_NATURAL_RESISTANCE;
+
+        if(radiationLeft <= 0){
+            return currentRadiation;
+        }
+
+        return radiationResisted;
+    }
+
+    public static float getRadiationResistedByArmor(Iterable<ItemStack> armorSet, float currentRadiation, boolean damageArmor){
+        float radiationResisted = 0;
+        float radiationLeft = currentRadiation;
+
+        for (ItemStack armor : armorSet) {
+            if(armor.getItem() instanceof IRadResistent) {
+                IRadResistent radArmor = (IRadResistent) armor.getItem();
+                float resistedByArmor = getRadResisted(radArmor.getRadResistance(), radiationLeft);
+                if (damageArmor && radArmor.canRadDamageArmor()) {
+                    //TODO: Either implement this or remove it.
+                    //damageArmorFromRads(armor, radiationLeft);
+                }
+                radiationResisted = radiationResisted + resistedByArmor;
+                radiationLeft = radiationLeft - resistedByArmor;
+                if (radiationLeft <= 0) {
+                    return currentRadiation;
+                }
+            }
+        }
+
+        return radiationResisted;
+    }
+
+    //Returns the radiation left over after the player has resistances calculated.
+    public static float getRadiationAbsorbedByPlayer(EntityPlayer player, float currentRadiation, boolean damageArmor){
+        return Math.max(currentRadiation - getRadiationResistedByPlayer(player,currentRadiation,damageArmor), 0.0f);
+    }
     private static float getDegradedBlockResistance(float resistance, float lightDegradeFactor){
         return resistance-(resistance*lightDegradeFactor);
     }

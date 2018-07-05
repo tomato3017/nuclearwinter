@@ -48,6 +48,9 @@ public class ItemRadiationDebugger extends ItemBase {
                     playerIn.sendMessage(new TextComponentString("New Rad level:" + radLevel.getRads()));
                 }
 
+//                float radiation = RadiationController.getRadiationAbsorbedByPlayer(playerIn,RadiationController.emitRadiationFromSky(worldIn, playerIn.getPositionVector()), false);
+//                playerIn.sendMessage(new TextComponentString("Radiation Left: " + radiation));
+
             }
 
 
