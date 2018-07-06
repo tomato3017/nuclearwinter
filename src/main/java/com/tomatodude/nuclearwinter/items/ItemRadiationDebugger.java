@@ -1,13 +1,14 @@
 package com.tomatodude.nuclearwinter.items;
 
-import com.tomatodude.nuclearwinter.radiation.IRadiationCapability;
-import com.tomatodude.nuclearwinter.radiation.RadiationLevelProvider;
+import com.tomatodude.nuclearwinter.NuclearWinter;
+import com.tomatodude.nuclearwinter.staging.IStageWorldSettings;
+import com.tomatodude.nuclearwinter.staging.StageController;
+import com.tomatodude.nuclearwinter.staging.StageWorldSettingsProvider;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 public class ItemRadiationDebugger extends ItemBase {
@@ -41,12 +42,15 @@ public class ItemRadiationDebugger extends ItemBase {
 //                    playerIn.addPotionEffect(new PotionEffect(RegistryHandler.radiation, 2000,1));
 //                }
 
-                if(playerIn.hasCapability(RadiationLevelProvider.RADIATION_LEVEL_CAPABILITY, null)){
-                    IRadiationCapability radLevel = (IRadiationCapability) playerIn.getCapability(RadiationLevelProvider.RADIATION_LEVEL_CAPABILITY, null);
-                    playerIn.sendMessage(new TextComponentString("Rad level:" + radLevel.getRads()));
-                    radLevel.addRads(1000.0f);
-                    playerIn.sendMessage(new TextComponentString("New Rad level:" + radLevel.getRads()));
-                }
+//                if(playerIn.hasCapability(RadiationLevelProvider.RADIATION_LEVEL_CAPABILITY, null)){
+//                    IRadiationCapability radLevel = (IRadiationCapability) playerIn.getCapability(RadiationLevelProvider.RADIATION_LEVEL_CAPABILITY, null);
+//                    playerIn.sendMessage(new TextComponentString("Rad level:" + radLevel.getRads()));
+//                    radLevel.addRads(1000.0f);
+//                    playerIn.sendMessage(new TextComponentString("New Rad level:" + radLevel.getRads()));
+//                }
+                IStageWorldSettings settings = (IStageWorldSettings) worldIn.getCapability(StageWorldSettingsProvider.STAGE_WORLD_SETTINGS_CAPABILITY, null);
+                settings.setCurrentStage(StageController.STAGES.APOCHIGH);
+                NuclearWinter.logger.debug("Current stage is now set to " + settings.getCurrentStage().toString());
 
 //                float radiation = RadiationController.getRadiationAbsorbedByPlayer(playerIn,RadiationController.emitRadiationFromSky(worldIn, playerIn.getPositionVector()), false);
 //                playerIn.sendMessage(new TextComponentString("Radiation Left: " + radiation));
