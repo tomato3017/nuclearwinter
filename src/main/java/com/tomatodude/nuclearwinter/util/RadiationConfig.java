@@ -34,6 +34,10 @@ public class RadiationConfig {
     public static final float HAZMAT_HELMET_RESISTANCE = 128;
     public static final float HAZMAT_LEGS_RESISTANCE = 128;
     public static final float HAZMAT_SUIT_RESISTANCE = 128;
+    public static final double MAX_RADIATION_LEVEL_PREAPOC = 512;
+    public static final int CHUNKPROC_CHUNK_PER_TICK = 40;
+    public static final int CHUNKPROC_BLOCKSTATIC_PER_TICK = 1;
+    public static final int CHUNKPROC_BLOCKRANDOM_PER_TICK = 20;
 
     //Stores custom radiation settings
     private static HashMap<String, RadBlockSetting> radiationMap;
@@ -47,7 +51,7 @@ public class RadiationConfig {
 
         insertMapping(new RadBlockSetting("minecraft:dirt", 16));
         insertMapping(new RadBlockSetting("minecraft:grass", 16,
-                "minecraft:dirt", 512));
+                "minecraft:dirt", 511));
         insertMapping(new RadBlockSetting("minecraft:stone", 128));
 
     }

@@ -19,7 +19,7 @@ public class StageWorldSettingsStorage implements Capability.IStorage<IStageWorl
         NBTTagCompound nbtComp = new NBTTagCompound();
         nbtComp.setBoolean(IS_ACTIVE, instance.isActive());
         nbtComp.setInteger(CURRENT_STAGE, instance.getCurrentStage().getValue());
-        nbtComp.setDouble(START_WORLD_TICK, instance.getTimeInStage());
+        nbtComp.setLong(START_WORLD_TICK, instance.getStartWorldTime());
 
         return nbtComp;
     }
@@ -29,6 +29,6 @@ public class StageWorldSettingsStorage implements Capability.IStorage<IStageWorl
         NBTTagCompound nbtComp = (NBTTagCompound) nbt;
         instance.setActive(nbtComp.getBoolean(IS_ACTIVE));
         instance.setCurrentStage(StageController.STAGES.valueOf(nbtComp.getInteger(CURRENT_STAGE)));
-        instance.setTimeInStage(nbtComp.getDouble(START_WORLD_TICK));
+        instance.setStartWorldTime(nbtComp.getLong(START_WORLD_TICK));
     }
 }

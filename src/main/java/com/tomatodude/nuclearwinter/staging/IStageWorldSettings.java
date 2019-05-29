@@ -3,9 +3,9 @@ package com.tomatodude.nuclearwinter.staging;
 public interface IStageWorldSettings {
     void setCurrentStage(StageController.STAGES stage);
     StageController.STAGES getCurrentStage();
-    double getTimeInStage();
+    long getStartWorldTime();
 
-    void setTimeInStage(double worldTickTime);
+    void setStartWorldTime(long worldTickTime);
 
     boolean isActive();
 

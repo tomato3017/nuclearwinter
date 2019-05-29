@@ -4,7 +4,7 @@ public class StageWorldSettings implements IStageWorldSettings {
 
     private StageController.STAGES currentStage = StageController.STAGES.INITIAL;
     private boolean isActive = false;
-    private double startWorldTick=0;
+    private long startWorldTick=0;
 
     @Override
     public void setCurrentStage(StageController.STAGES stage){
@@ -17,12 +17,12 @@ public class StageWorldSettings implements IStageWorldSettings {
     }
 
     @Override
-    public double getTimeInStage() {
+    public long getStartWorldTime() {
         return startWorldTick;
     }
 
     @Override
-    public void setTimeInStage(double worldTickTime) {
+    public void setStartWorldTime(long worldTickTime) {
         this.startWorldTick=worldTickTime;
     }
 

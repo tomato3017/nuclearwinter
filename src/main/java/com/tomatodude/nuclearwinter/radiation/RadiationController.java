@@ -65,7 +65,9 @@ public class RadiationController {
             }
 
             currentVector = currentVector.add(travelVectorNorm);
-
+            if(currentRadLevel < RadiationConfig.PLAYER_NATURAL_RESISTANCE){ //No need to continue if below 65
+                return 0;
+            }
         }
 
         return currentRadLevel;
@@ -76,7 +78,8 @@ public class RadiationController {
     public static float emitRadiationFromSky(World worldIn, Vec3d targetPos){
         RadiationSettings radSetting = new RadiationSettings();
         radSetting.setDegradeBlocks(true);
-        radSetting.setPlayerEffected(true);
+        radSetting.setPlayerEffected(false);
+        radSetting.setBlockLightDegradation(false);
 
         Vec3d startPos = new Vec3d(targetPos.x, RadiationConfig.SKY_RADIATION_START, targetPos.z);
 
@@ -157,4 +160,5 @@ public class RadiationController {
     private static float getCurrentRadLevel() {
         return RadiationConfig.MAX_RADIATION_LEVEL;
     }
+
 }

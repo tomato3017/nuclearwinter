@@ -2,6 +2,7 @@ package com.tomatodude.nuclearwinter.util.handler;
 
 import com.tomatodude.nuclearwinter.staging.StageWorldSettingsProvider;
 import com.tomatodude.nuclearwinter.util.Reference;
+import com.tomatodude.nuclearwinter.util.Util;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -14,8 +15,9 @@ public class CapabilitiesHandler {
     @SubscribeEvent
     public static void onCapabilitiesAttach_World(AttachCapabilitiesEvent<World> event){
         World world = event.getObject();
-        if(!world.isRemote){
+        if(!world.isRemote && !Util.isNetherOrEnd(world)){
             event.addCapability(new ResourceLocation(Reference.MOD_ID,"staginginfo"),new StageWorldSettingsProvider());
         }
     }
+
 }

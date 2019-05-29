@@ -1,9 +1,6 @@
 package com.tomatodude.nuclearwinter.items;
 
-import com.tomatodude.nuclearwinter.NuclearWinter;
-import com.tomatodude.nuclearwinter.staging.IStageWorldSettings;
 import com.tomatodude.nuclearwinter.staging.StageController;
-import com.tomatodude.nuclearwinter.staging.StageWorldSettingsProvider;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -48,12 +45,13 @@ public class ItemRadiationDebugger extends ItemBase {
 //                    radLevel.addRads(1000.0f);
 //                    playerIn.sendMessage(new TextComponentString("New Rad level:" + radLevel.getRads()));
 //                }
-                IStageWorldSettings settings = (IStageWorldSettings) worldIn.getCapability(StageWorldSettingsProvider.STAGE_WORLD_SETTINGS_CAPABILITY, null);
-                settings.setCurrentStage(StageController.STAGES.APOCHIGH);
-                NuclearWinter.logger.debug("Current stage is now set to " + settings.getCurrentStage().toString());
+//                StageController.activateStaging(worldIn, null);
+//               // DimensionManager.getWorld(0).isL
+////                float radiation = RadiationController.getRadiationAbsorbedByPlayer(playerIn,RadiationController.emitRadiationFromSky(worldIn, playerIn.getPositionVector()), false);
+////                playerIn.sendMessage(new TextComponentString("Radiation Left: " + radiation));
+//                RadChunkProcessor r = new RadChunkProcessor(0,20);
+                StageController.activateStaging(worldIn, null);
 
-//                float radiation = RadiationController.getRadiationAbsorbedByPlayer(playerIn,RadiationController.emitRadiationFromSky(worldIn, playerIn.getPositionVector()), false);
-//                playerIn.sendMessage(new TextComponentString("Radiation Left: " + radiation));
 
             }
 
