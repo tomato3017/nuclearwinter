@@ -1,5 +1,6 @@
 package com.tomatodude.nuclearwinter.staging;
 
+import com.tomatodude.nuclearwinter.NuclearWinter;
 import com.tomatodude.nuclearwinter.radiation.RadiationController;
 import com.tomatodude.nuclearwinter.util.Coord2d;
 import com.tomatodude.nuclearwinter.util.RadChunkPos;
@@ -27,14 +28,6 @@ public class RadChunkProcessor {
     public RadChunkProcessor(double maxRadiation) {
         this.maxRadiation = maxRadiation;
 
-//        chunkQueue = new PriorityQueue<>(10,
-//                (RadChunkPos r1, RadChunkPos r2) -> {
-//                    if(r1.isNeedsNuking() && !r2.isNeedsNuking())
-//                        return -1;
-//                    if(!r1.isNeedsNuking() && r2.isNeedsNuking())
-//                        return 1;
-//                    return 0;
-//                });
         chunkQueue = new ArrayDeque<>();
     }
 
@@ -99,6 +92,21 @@ public class RadChunkProcessor {
         isActive = active;
         return this;
     }
+
+    public void AddChunkToProcessor(RadChunkPos c){
+        if(!chunkQueue.contains(c)){
+            NuclearWinter.logger.debug("Adding chunk to processor " + c.x + "," + c.z);
+            chunkQueue.add(c);
+        }
+    }
+
+    public void RemoveChunkFromProcessor(RadChunkPos c){
+        if(chunkQueue.remove(c)){
+            NuclearWinter.logger.debug("Removing chunk from processor " + c.x + "," + c.z);
+        }
+    }
+
+
 
     public double getMaxRadiation() {
         return maxRadiation;

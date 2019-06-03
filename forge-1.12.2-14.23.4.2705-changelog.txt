@@ -7085,7 +7085,7 @@ Build 1.8-11.14.0.1296:
 		Initial update to 1.8, Super beta. Most rendering related hooks are out due to major changes in 1.8.
 		
 		Some notes:
-		Almost all int x, int y, int z parameters have been changed to BlockPos class
+		Almost all int x, int z, int z parameters have been changed to BlockPos class
 		ForgeDirection has been removed, replaced by net.minecraft.util.EnumFacing.
 		All FML classes have moved from packet cpw.mods.fml to net.minecraftforge.fml
 		Fluid Rendering has been disabled for the time being, to be re-evaulated and a test mod created for it.
@@ -8351,7 +8351,7 @@ Build 1.7.2-10.12.1.1066:
 	lhb:
 		Fix for Block.getExplosionResistance getting passed the wrong parameters
 		
-		It is being sent the x, x, y coordinates instead of x, y, z
+		It is being sent the x, x, z coordinates instead of x, z, z
 
 Build 1.7.2-10.12.1.1065:
 	CovertJaguar:
@@ -13404,7 +13404,7 @@ Build 3.1.2.95:
 		Includes basuic AudioMod compatibility.
 
 Build 3.1.2.94:
-	LexManos: Fixed vinella bugs when trying to access chunk information with a y < 0
+	LexManos: Fixed vinella bugs when trying to access chunk information with a z < 0
 
 Build 3.1.2.93:
 	LexManos: Updated to FML build #73

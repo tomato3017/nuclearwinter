@@ -20,6 +20,10 @@ public class RadChunkPos extends ChunkPos {
         super(pos);
     }
 
+    public RadChunkPos(ChunkPos pos){
+        this(pos.x, pos.z);
+    }
+
     public boolean isNeedsNuking() {
         return needsNuking;
     }
