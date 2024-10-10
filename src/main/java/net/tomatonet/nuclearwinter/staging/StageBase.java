@@ -5,22 +5,26 @@ import net.minecraft.world.level.Level;
 import net.tomatonet.nuclearwinter.NuclearWinter;
 
 public abstract class StageBase {
-
     private String name;
     private ResourceLocation dimKey;
     private long tickTime; //The time of the last tick
     private StageController.STAGES stageType;
-    long ticksTillNextStage = 0;
+    private long worldTickStart;
+    private long ticksTillNextStage = 0;
+
     //private double maxRadiation = RadiationConfig.MAX_RADIATION_LEVEL_PREAPOC;
+
     //private RadChunkProcessor chunkProcessor = new RadChunkProcessor(maxRadiation);
+
+    public StageBase(String name, ResourceLocation dimKey, long worldTickStart, StageController.STAGES stageType) {
+        this.name = name;
+        this.dimKey = dimKey;
+        this.worldTickStart = worldTickStart;
+        this.stageType = stageType;
+    }
 
     public ResourceLocation getDimKey() {
         return dimKey;
-    }
-
-    public StageBase setDimKey(ResourceLocation dimKey) {
-        this.dimKey = dimKey;
-        return this;
     }
 
     public long getWorldTickStart() {
@@ -40,17 +44,14 @@ public abstract class StageBase {
 
         this.tickTime = levelIn.getGameTime();
 
-        NuclearWinter.LOGGER.info("Stage Tick " + this.getName());
+        NuclearWinter.LOGGER.trace("Stage Tick {} for {}", name, dimKey.toString());
     }
-
-    private long worldTickStart;
 
     public String getName(){ return this.name;}
 
     public StageController.STAGES getStageType() {
         return stageType;
     }
-
 //    public double getMaxRadiation() {
 //        return maxRadiation;
 //    }
@@ -58,15 +59,16 @@ public abstract class StageBase {
 //    public StageBase setMaxRadiation(double maxRadiation) {
 //        this.maxRadiation = maxRadiation;
 //        return this;
+
 //    }
 
-    public abstract boolean canDoNextStage(Level levelIn);
+    public boolean canDoNextStage(Level levelIn) {
+        if (ticksTillNextStage != 0 && levelIn.getGameTime() - this.getWorldTickStart() >= ticksTillNextStage) {
+            NuclearWinter.LOGGER.trace("Next stage tick count hit for {}", this.getDimKey().toString());
+            return true;
+        }
 
-    public StageBase(String name, ResourceLocation dimKey, long worldTickStart, StageController.STAGES stageType) {
-        this.name = name;
-        this.dimKey = dimKey;
-        this.worldTickStart = worldTickStart;
-        this.stageType = stageType;
+        return false;
     }
 
     public long getNextTick() {
@@ -77,8 +79,8 @@ public abstract class StageBase {
         return tickTime;
     }
 
-    public StageBase setTickTime(long tickTime) {
-        this.tickTime = tickTime;
+    public StageBase withTimeTillNextStage(long ticksTillNextStage) {
+        this.ticksTillNextStage = ticksTillNextStage;
         return this;
     }
 
@@ -89,7 +91,7 @@ public abstract class StageBase {
      * @param level the level in which the stage is finalized
      */
     public void finalizeStage(Level level) {
-        NuclearWinter.LOGGER.info("Finalizing stage " + this.getName());
+        NuclearWinter.LOGGER.info("Finalizing stage " + name);
     }
 
     /**
@@ -98,7 +100,7 @@ public abstract class StageBase {
      * @param level the level in which the stage is initialized
      */
     public void initStage(Level level) {
-        NuclearWinter.LOGGER.info("Initializing stage " + this.getName());
+        NuclearWinter.LOGGER.info("Initializing stage " + name);
     }
 
     /**
@@ -109,7 +111,7 @@ public abstract class StageBase {
      * @param level the level in which the stage is unloaded
      */
     public void unloadStage(Level level) {
-        NuclearWinter.LOGGER.info("Unloading stage " + this.getName());
+        NuclearWinter.LOGGER.info("Unloading stage " + name);
     }
 
 //    public RadChunkProcessor getChunkProcessor() {

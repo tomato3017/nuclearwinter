@@ -2,6 +2,7 @@ package net.tomatonet.nuclearwinter.commands;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -18,11 +19,39 @@ public class NuclearWinterCommand {
         dispatcher.register(Commands.literal("nuclearwinter").
                 then(Commands.literal("start").executes(NuclearWinterCommand::runCmdStart)).
                 then(Commands.literal("stop").executes(NuclearWinterCommand::runCmdStop)).
-                then(Commands.literal("status").executes(NuclearWinterCommand::runCmdStatus)));
+                then(Commands.literal("status").executes(NuclearWinterCommand::runCmdStatus)).
+                then(Commands.literal("setstage").
+                        then(Commands.argument("stageName", StringArgumentType.string())).
+                        executes(NuclearWinterCommand::runSetStage)));
     }
 
-    private static int runCmdStatus(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
-        if (commandSourceStackCommandContext.getSource().getEntity() instanceof Player player) {
+    private static int runSetStage(CommandContext<CommandSourceStack> commandIn) {
+        if (commandIn.getSource().getEntity() instanceof Player player) {
+            if (!NuclearWinter.stageController.isLoadedStage(player.level())) {
+                commandIn.getSource().sendFailure(Component.literal("You must first start!"));
+                return 0;
+            }
+
+            String stageName = StringArgumentType.getString(commandIn, "stageName");
+            StageController.STAGES stage;
+            try {
+                stage = StageController.STAGES.valueOf(stageName);
+            } catch (IllegalArgumentException e) {
+                commandIn.getSource().sendFailure(Component.literal("Invalid stage name! Valid stage names are: {}" + StageController.getStageNames()));
+                return 0;
+            }
+
+            NuclearWinter.stageController.activateStaging(player.level(), stage);
+            player.sendSystemMessage(Component.literal("Stage set to " + stageName));
+
+            return Command.SINGLE_SUCCESS;
+        }
+        commandIn.getSource().sendFailure(Component.literal("Command source is not a player! You must be a player to run this command!"));
+        return 0;
+    }
+
+    private static int runCmdStatus(CommandContext<CommandSourceStack> commandIn) {
+        if (commandIn.getSource().getEntity() instanceof Player player) {
             if (NuclearWinter.stageController.isLoadedStage(player.level())) {
                 IStageLevelSettings stageSettings = NuclearWinter.stageController.getStageLevelSettings(player.level());
                 StageBase loadedStage = NuclearWinter.stageController.getActiveStage(player.level());
@@ -33,7 +62,7 @@ public class NuclearWinterCommand {
             }
             return Command.SINGLE_SUCCESS;
         }
-        commandSourceStackCommandContext.getSource().sendFailure(Component.literal("Command source is not a player! You must be a player to run this command!"));
+        commandIn.getSource().sendFailure(Component.literal("Command source is not a player! You must be a player to run this command!"));
         return 0;
     }
 
@@ -65,10 +94,10 @@ public class NuclearWinterCommand {
         return 0;
     }
 
-    private static int runCmdStart(CommandContext<CommandSourceStack> command) {
-        if (command.getSource().getEntity() instanceof Player player) {
+    private static int runCmdStart(CommandContext<CommandSourceStack> commandIn) {
+        if (commandIn.getSource().getEntity() instanceof Player player) {
             if (NuclearWinter.stageController.isLoadedStage(player.level())) {
-                command.getSource().sendFailure(Component.literal("Stage is already loaded!"));
+                commandIn.getSource().sendFailure(Component.literal("Stage is already loaded!"));
                 return 0;
             }
 
@@ -82,7 +111,7 @@ public class NuclearWinterCommand {
             player.sendSystemMessage(Component.literal("Staging activated!"));
             return Command.SINGLE_SUCCESS;
         }
-        command.getSource().sendFailure(Component.literal("Command source is not a player! You must be a player to run this command!"));
+        commandIn.getSource().sendFailure(Component.literal("Command source is not a player! You must be a player to run this command!"));
         return 0;
     }
 }

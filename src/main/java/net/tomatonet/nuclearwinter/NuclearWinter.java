@@ -2,6 +2,8 @@ package net.tomatonet.nuclearwinter;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -15,9 +17,17 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.tomatonet.nuclearwinter.commands.NuclearWinterCommand;
+import net.tomatonet.nuclearwinter.radiation.RadBlockRegistry;
 import net.tomatonet.nuclearwinter.staging.StageController;
 import org.slf4j.Logger;
+import org.slf4j.event.Level;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(NuclearWinter.MODID)
@@ -91,6 +101,8 @@ public class NuclearWinter
 //        LOGGER.info(Config.magicNumberIntroduction + Config.magicNumber);
 //
 //        Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
+        LOGGER.info("Loading Radiation Settings for blocks");
+        RadBlockRegistry.loadSettingsFromFile();
     }
 
 //    // Add the example block item to the building blocks tab
@@ -107,6 +119,7 @@ public class NuclearWinter
 //        // Do something when the server starts
 //        LOGGER.info("HELLO from server starting");
 //    }
+
 
     @SubscribeEvent
     public void onCommandRegister(RegisterCommandsEvent event)

@@ -46,6 +46,10 @@ public class Config
             .comment("Number of days the apocalypse will last on low intensity")
             .defineInRange("daysApocalypseLow", 7, 1, Integer.MAX_VALUE);
 
+    public static final ForgeConfigSpec.BooleanValue DEBUG_LOGGING = BUILDER
+            .comment("Enable debug logging")
+            .define("debugLogging", false);
+
     static final ForgeConfigSpec SPEC = BUILDER.build();
 
     private static boolean validateItemName(final Object obj)
@@ -57,8 +61,5 @@ public class Config
     static void onLoad(final ModConfigEvent event)
     {
         NuclearWinter.LOGGER.debug("Loading config file {}", event.getConfig().getFileName());
-        for (Map.Entry<String, ForgeConfigSpec.ConfigValue<?>> entry : event.getConfig().getConfigData().) {
-            NuclearWinter.LOGGER.debug("{}: {}", entry.getKey(), entry.getValue());
-        }
     }
 }

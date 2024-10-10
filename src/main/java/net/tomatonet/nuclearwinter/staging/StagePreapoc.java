@@ -11,20 +11,8 @@ import org.slf4j.Logger;
  */
 public class StagePreapoc extends StageBase {
     Logger LOGGER = NuclearWinter.LOGGER;
-    long ticksTillNextStage = 0;
-
-    public StagePreapoc(ResourceLocation dimKey, long worldTickStart, int daysTillNextStage) {
+    public StagePreapoc(ResourceLocation dimKey, long worldTickStart) {
         super(StageController.STAGES.PREAPOC.toString(), dimKey, worldTickStart, StageController.STAGES.PREAPOC);
-        ticksTillNextStage = daysTillNextStage * 24000L;
     }
 
-    @Override
-    public boolean canDoNextStage(Level levelIn) {
-        if (ticksTillNextStage != 0 && levelIn.getGameTime() - this.getWorldTickStart() >= ticksTillNextStage) {
-            LOGGER.trace("Next stage tick count hit for {}", this.getDimKey().toString());
-            return true;
-        }
-
-        return false;
-    }
 }

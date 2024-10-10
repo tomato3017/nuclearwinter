@@ -24,6 +24,15 @@ public class StageController {
 
     }
 
+    public static String getStageNames() {
+        StringBuilder sb = new StringBuilder();
+        for (STAGES stage : STAGES.values()) {
+            sb.append(stage.name()).append(", ");
+        }
+
+        return sb.toString();
+    }
+
     public boolean isLoadedStage(Level level) {
         ResourceLocation dimKey = level.dimension().location();
         return activeStageMap.containsKey(dimKey);
@@ -37,7 +46,7 @@ public class StageController {
 
     @SubscribeEvent
     public void onWorldLoad(LevelEvent.Load event) {
-        LOGGER.debug("World loaded");
+        LOGGER.debug("World loading");
 
         if (!event.getLevel().isClientSide() && event.getLevel() instanceof Level level) {
             if (!hasStageLevelSettings(level)) {
@@ -50,8 +59,9 @@ public class StageController {
                 return;
             }
 
-            LOGGER.debug("Activating staging for " + level.dimension().location());
-            this.loadStage(level, stageLevelSettings);
+            LOGGER.debug("Loading staging for {} ", level.dimension().location());
+            StageBase stage  = loadStage(level, stageLevelSettings);
+            LOGGER.debug("Loaded stage {} for {}", stage.getName(), level.dimension().location());
         }
     }
 
@@ -109,8 +119,10 @@ public class StageController {
         long worldTickStart = stageLevelSettings.getStartWorldTime();
 
         return switch (stageLevelSettings.getCurrentStage()) {
-            case PREAPOC -> new StagePreapoc(dimKey.location(), worldTickStart, Config.DAYS_BEFORE_APOCALYPSE.get());
-            case APOCLOW -> new StageApocLow(dimKey.location(), worldTickStart, Config.DAYS_APOCALYPSE_LOW.get());
+            case PREAPOC -> new StagePreapoc(dimKey.location(), worldTickStart).
+                                withTimeTillNextStage(Config.DAYS_BEFORE_APOCALYPSE.get() * 24000);
+            case APOCLOW -> new StageApocLow(dimKey.location(), worldTickStart).
+                                withTimeTillNextStage(Config.DAYS_APOCALYPSE_LOW.get() * 24000);
             case APOCMED -> new StagePlaceholder(dimKey.location(), worldTickStart);
             case APOCHIGH -> new StagePlaceholder(dimKey.location(), worldTickStart);
             case POSTAPOC -> new StagePlaceholder(dimKey.location(), worldTickStart);
@@ -134,7 +146,6 @@ public class StageController {
     public void onWorldTick(TickEvent.LevelTickEvent event) {
         if (event.phase == TickEvent.Phase.START && isLoadedStage(event.level)) {
             Level level = event.level;
-            LOGGER.trace("Level tick for {}", level.dimension().location());
 
             StageBase stage = activeStageMap.get(event.level.dimension().location());
             if (stage.getNextTick() <= event.level.getGameTime()) {
@@ -144,7 +155,6 @@ public class StageController {
     }
 
     private void tickStage(StageBase stage, Level level) {
-        LOGGER.debug("Stage tick for {} for level {}",stage.getName(), level.dimension().location());
         stage.doStageTick(level);
 
         //Were going to put the next stage logic here,
@@ -159,6 +169,7 @@ public class StageController {
         }
     }
 
+    @NotNull
     private StageBase loadStage(Level level, IStageLevelSettings stageLevelSettings) {
         StageBase stage;
         try {
