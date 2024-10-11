@@ -79,7 +79,7 @@ public class RadiationSource {
             if(blockState.getBlock() != Blocks.AIR){ //TODO: Optimize this by getting the heightmap first
                 BlockState testBlockState = Blocks.STONE.defaultBlockState();
                 level.setBlock(currentBlockPos,testBlockState,Block.UPDATE_NEIGHBORS | Block.UPDATE_CLIENTS);
-                RadBlockSetting radResist = RadBlockSetting.getResistanceOfBlock(blockState, level, currentBlockPos);
+                RadBlockSetting radResist = RadBlockRegistry.getResistanceOfBlock(blockState, level, currentBlockPos);
                 float degradedBlockResistance = getDegradedBlockResistance(radResist.getBlockResistance(),blockLightDegradeFactor);
                 float radiationResisted = getRadResisted(radResist.getBlockResistance(), currentRadLevel);
 

@@ -3,6 +3,8 @@ package net.tomatonet.nuclearwinter.debug;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,6 +27,8 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(modid = NuclearWinter.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class NWDebugHooks {
@@ -60,7 +64,23 @@ public class NWDebugHooks {
     public static void onServerStarting(ServerStartingEvent event) {
         //TODO remove
         dumpBlockDestroySpeeds("block_destroy_speeds.txt");
+        dumpBlockTags("block_tags.txt");
         dumpAllBlockIds();
+    }
+
+    public static void dumpBlockTags(String filePath) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            for (Block block : ForgeRegistries.BLOCKS) {
+                writer.write(ForgeRegistries.BLOCKS.getKey(block) + ":\t");
+                for (var tag : block.defaultBlockState().getTags().toList()) {
+                    writer.write(tag.location() + ", ");
+                }
+
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @SubscribeEvent
