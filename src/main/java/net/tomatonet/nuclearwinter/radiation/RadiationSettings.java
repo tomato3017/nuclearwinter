@@ -5,6 +5,7 @@ public class RadiationSettings {
     private boolean playerEffected = false;
     private boolean degradeBlocks = true;
     private boolean blockLightDegradation = false;
+    private boolean stopOnDegradation = false;
 
     private float startRadLevel = 65535; //TODO: Configify this
 
@@ -50,6 +51,15 @@ public class RadiationSettings {
 
     public RadiationSettings setBlockLightDegradation(boolean blockLightDegradation) {
         this.blockLightDegradation = blockLightDegradation;
+        return this;
+    }
+
+    public boolean isStopOnDegradation() {
+        return stopOnDegradation;
+    }
+
+    public RadiationSettings setStopOnDegradation(boolean stopOnDegradation) {
+        this.stopOnDegradation = stopOnDegradation;
         return this;
     }
 }

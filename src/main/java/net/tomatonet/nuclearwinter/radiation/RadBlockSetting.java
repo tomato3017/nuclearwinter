@@ -1,24 +1,8 @@
 package net.tomatonet.nuclearwinter.radiation;
 
-//public class RadBlockSetting {
-//
-//    private float blockResistance = 128.0f; //TODO Calculate based on explosion resistance
-//    public static RadBlockSetting getResistanceOfBlock(BlockState blockState, Level level, BlockPos currentBlockPos) {
-//        return new RadBlockSetting();
-//    }
-//
-//    public static void loadSettings() {
-//       final Gson gson = new Gson();
-//
-//    }
-//
-//    public float getBlockResistance() {
-//        return this.blockResistance;
-//    }
-//}
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.HashMap;
@@ -27,19 +11,42 @@ public record RadBlockSetting(
         String blockId,
         float blockResistance,
         Float blockDegradationLevel,
-        String targetBlockId
+        String targetBlockId,
+        boolean stopOnDegradation
 ) {
-
-    public float getBlockResistance() {
-        return 128.0f;
+    public RadBlockSetting(String blockId, float blockResistance) {
+        this(blockId, blockResistance, null, null, false);
     }
+
+    public RadBlockSetting(String blockId, float blockResistance, Float blockDegradationLevel, String targetBlockId) {
+       this(blockId, blockResistance, blockDegradationLevel, targetBlockId, false);
+    }
+
+
+
+
 
     public Block getBlock() {
         return ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockId));
     }
 
     public String toString() {
-        return String.format("ID: %s, Resistance: %.2f, Degradation Level: %s, Target Block ID: %s",
-                blockId, blockResistance, blockDegradationLevel, targetBlockId);
+        return String.format("ID: %s, Resistance: %.2f, Degradation Level: %s, Target Block ID: %s, Stop on Degradation: %b",
+                blockId, blockResistance, blockDegradationLevel, targetBlockId, stopOnDegradation);
+    }
+
+    public boolean isBlockDegrade() {
+        return blockDegradationLevel != null;
+    }
+
+    public BlockState targetBlockState() {
+        if (targetBlockId == null) {
+            return null;
+        }
+        if (ForgeRegistries.BLOCKS.containsKey(new ResourceLocation(targetBlockId))) {
+            return ForgeRegistries.BLOCKS.getValue(new ResourceLocation(targetBlockId)).defaultBlockState();
+        }
+
+        return null;
     }
 }

@@ -90,35 +90,16 @@ public class NuclearWinter
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
-    private void commonSetup(final FMLCommonSetupEvent event)
+    @SubscribeEvent
+    public void onServerStarting(final ServerStartingEvent event)
     {
-        // Some common setup code
-        LOGGER.info("HELLO FROM COMMON SETUP");
-
-//        if (Config.logDirtBlock)
-//            LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
-//
-//        LOGGER.info(Config.magicNumberIntroduction + Config.magicNumber);
-//
-//        Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
-        LOGGER.info("Loading Radiation Settings for blocks");
+        LOGGER.info("Loading radiation settings from file");
         RadBlockRegistry.loadSettingsFromFile();
     }
 
-//    // Add the example block item to the building blocks tab
-//    private void addCreative(BuildCreativeModeTabContentsEvent event)
-//    {
-//        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS)
-//            event.accept(EXAMPLE_BLOCK_ITEM);
-//    }
-
-//    // You can use SubscribeEvent and let the Event Bus discover methods to call
-//    @SubscribeEvent
-//    public void onServerStarting(ServerStartingEvent event)
-//    {
-//        // Do something when the server starts
-//        LOGGER.info("HELLO from server starting");
-//    }
+    private void commonSetup(final FMLCommonSetupEvent event)
+    {
+    }
 
 
     @SubscribeEvent
