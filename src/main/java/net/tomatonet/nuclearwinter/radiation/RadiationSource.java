@@ -6,6 +6,7 @@ package net.tomatonet.nuclearwinter.radiation;
 //Target player?
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Blocks;
@@ -34,6 +35,10 @@ public class RadiationSource {
 
     public static Vec3 getHeightMapPos(Level level, BlockPos blockPos) {
         return new Vec3(blockPos.getX(), level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, blockPos.getX(), blockPos.getZ()), blockPos.getZ());
+    }
+
+    public static Vec3 getPlayerPos(Player player) {
+        return new Vec3(player.getX(), player.getY(), player.getZ());
     }
 
     public float getBlockLightDegradeFactor(Level level, Vec3 endPos) {
@@ -66,7 +71,7 @@ public class RadiationSource {
         //Norm so we have our direction and a scalar to manipulate
         Vec3 travelVectorNorm = travelVector.normalize();
         double length = travelVector.length();
-        float currentRadLevel = radSettings.getStartRadLevel();
+        float currentRadLevel = radSettings.getInitialRadLevel();
         //Vector we use in the for loop
         Vec3 currentVector = travelVectorNorm;
 

@@ -83,20 +83,20 @@ public class NWDebugHooks {
         }
     }
 
-    @SubscribeEvent
-    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.side.isServer() && event.phase == TickEvent.Phase.START && NuclearWinter.stageController.isLoadedStage(event.player.level())) {
-            Player player = event.player;
-            if (player.level().getGameTime() % 20 == 0) {
-                RadiationSettings settings = new RadiationSettings().setBlockLightDegradation(false);
-                RadiationSource skyRads = new RadiationSource(settings);
-                float radsGiven = skyRads.emitRadiation(player.level(),
-                        RadiationSource.getHeightMapPos(player.level(), player.blockPosition()).add(0,1,0),
-                        new Vec3(player.blockPosition().getX(), player.blockPosition().getY(), player.blockPosition().getZ()));
-                if (radsGiven > 0) {
-                    NuclearWinter.LOGGER.debug("Player " + player.getName().getString() + " received " + radsGiven + " rads");
-                }
-            }
-        }
-    }
+//    @SubscribeEvent
+//    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+//        if (event.side.isServer() && event.phase == TickEvent.Phase.START && NuclearWinter.stageController.isLoadedStage(event.player.level())) {
+//            Player player = event.player;
+//            if (player.level().getGameTime() % 20 == 0) {
+//                RadiationSettings settings = new RadiationSettings().setBlockLightDegradation(false);
+//                RadiationSource skyRads = new RadiationSource(settings);
+//                float radsGiven = skyRads.emitRadiation(player.level(),
+//                        RadiationSource.getHeightMapPos(player.level(), player.blockPosition()).add(0,1,0),
+//                        new Vec3(player.blockPosition().getX(), player.blockPosition().getY(), player.blockPosition().getZ()));
+//                if (radsGiven > 0) {
+//                    NuclearWinter.LOGGER.debug("Player " + player.getName().getString() + " received " + radsGiven + " rads");
+//                }
+//            }
+//        }
+//    }
 }

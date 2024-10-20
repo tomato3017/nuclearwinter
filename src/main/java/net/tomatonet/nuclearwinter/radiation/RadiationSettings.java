@@ -4,13 +4,13 @@ public class RadiationSettings {
 
     private boolean playerEffected = false;
     private boolean degradeBlocks = true;
-    private boolean blockLightDegradation = false;
+    private boolean blockLightDegradation = RadiationConfig.RAD_BLOCK_LIGHT_DEGRADE;
     private boolean stopOnDegradation = false;
 
-    private float startRadLevel = 65535; //TODO: Configify this
+    private float initialRadLevel = 0; //TODO: Configify this
 
     public RadiationSettings() {
-        this.setStartRadLevel(RadiationConfig.MAX_RADIATION_LEVEL);
+        this.setInitialRadLevel(RadiationConfig.MAX_RADIATION_LEVEL);
     }
 
     public boolean isPlayerEffected() {
@@ -31,13 +31,12 @@ public class RadiationSettings {
         return this;
     }
 
-    //TODO: Enable getting from stage?
-    public float getStartRadLevel() {
-        return startRadLevel;
+    public float getInitialRadLevel() {
+        return initialRadLevel;
     }
 
-    public RadiationSettings setStartRadLevel(float startRadLevel) {
-        this.startRadLevel = startRadLevel;
+    public RadiationSettings setInitialRadLevel(float initialRadLevel) {
+        this.initialRadLevel = initialRadLevel;
         return this;
     }
 

@@ -7,6 +7,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.tomatonet.nuclearwinter.Config;
 import net.tomatonet.nuclearwinter.NuclearWinter;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +19,7 @@ import java.util.HashMap;
 
 public class StageController {
     private final Logger LOGGER = NuclearWinter.LOGGER;
-    private HashMap<ResourceLocation, StageBase> activeStageMap = new HashMap<>();
+    private final HashMap<ResourceLocation, StageBase> activeStageMap = new HashMap<>();
 
     public StageController() {
 
@@ -42,27 +43,6 @@ public class StageController {
     public StageBase getActiveStage(Level level) {
         ResourceLocation dimKey = level.dimension().location();
         return activeStageMap.get(dimKey);
-    }
-
-    @SubscribeEvent
-    public void onWorldLoad(LevelEvent.Load event) {
-        LOGGER.debug("World loading");
-
-        if (!event.getLevel().isClientSide() && event.getLevel() instanceof Level level) {
-            if (!hasStageLevelSettings(level)) {
-                LOGGER.warn("Stage level settings not found for " + level.dimension().location());
-                return;
-            }
-            IStageLevelSettings stageLevelSettings = getStageLevelSettings(level);
-            if (!stageLevelSettings.isActive()) {
-                LOGGER.debug("Staging not active for " + level.dimension().location());
-                return;
-            }
-
-            LOGGER.debug("Loading staging for {} ", level.dimension().location());
-            StageBase stage  = loadStage(level, stageLevelSettings);
-            LOGGER.debug("Loaded stage {} for {}", stage.getName(), level.dimension().location());
-        }
     }
 
     public void activateStaging(Level level, STAGES stageType) {
@@ -120,13 +100,34 @@ public class StageController {
 
         return switch (stageLevelSettings.getCurrentStage()) {
             case PREAPOC -> new StagePreapoc(dimKey.location(), worldTickStart).
-                                withTimeTillNextStage(Config.DAYS_BEFORE_APOCALYPSE.get() * 24000);
+                    withDaysTillNextStage(Config.DAYS_BEFORE_APOCALYPSE.get());
             case APOCLOW -> new StageApocLow(dimKey.location(), worldTickStart).
-                                withTimeTillNextStage(Config.DAYS_APOCALYPSE_LOW.get() * 24000);
+                    withDaysTillNextStage(Config.DAYS_APOCALYPSE_LOW.get());
             case APOCMED -> new StagePlaceholder(dimKey.location(), worldTickStart);
             case APOCHIGH -> new StagePlaceholder(dimKey.location(), worldTickStart);
             case POSTAPOC -> new StagePlaceholder(dimKey.location(), worldTickStart);
         };
+    }
+
+    @SubscribeEvent
+    public void onWorldLoad(LevelEvent.Load event) {
+        LOGGER.debug("World loading");
+
+        if (!event.getLevel().isClientSide() && event.getLevel() instanceof Level level) {
+            if (!hasStageLevelSettings(level)) {
+                LOGGER.warn("Stage level settings not found for " + level.dimension().location());
+                return;
+            }
+            IStageLevelSettings stageLevelSettings = getStageLevelSettings(level);
+            if (!stageLevelSettings.isActive()) {
+                LOGGER.debug("Staging not active for " + level.dimension().location());
+                return;
+            }
+
+            LOGGER.debug("Loading staging for {} ", level.dimension().location());
+            StageBase stage = loadStage(level, stageLevelSettings);
+            LOGGER.debug("Loaded stage {} for {}", stage.getName(), level.dimension().location());
+        }
     }
 
     @SubscribeEvent
@@ -154,12 +155,23 @@ public class StageController {
         }
     }
 
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        if (event.phase == TickEvent.Phase.START &&
+                event.side == LogicalSide.SERVER &&
+                isLoadedStage(event.player.level()) &&
+                event.player.level().getGameTime() % 20 == 0) { // Tick every second
+            StageBase stage = activeStageMap.get(event.player.level().dimension().location());
+            stage.doPlayerTick(event.player);
+        }
+    }
+
     private void tickStage(StageBase stage, Level level) {
         stage.doStageTick(level);
 
         //Were going to put the next stage logic here,
         //it'll be locked to the stage tick itself but stop from being called every world tick
-        if(stage.canDoNextStage(level)){
+        if (stage.canDoNextStage(level)) {
             LOGGER.debug("Can do next stage for {}", stage.getName());
             LOGGER.debug("Finalizing stage {}", stage.getName());
             stage.finalizeStage(level);

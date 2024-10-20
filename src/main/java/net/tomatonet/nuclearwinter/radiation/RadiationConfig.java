@@ -42,6 +42,7 @@ public class RadiationConfig {
 
 
     public static final int RAD_BLOCK_LIGHT_DEGRADE_FACTOR = 6;
+    public static final boolean RAD_BLOCK_LIGHT_DEGRADE = true;
 
 //
 //    public static void initRadMap(){

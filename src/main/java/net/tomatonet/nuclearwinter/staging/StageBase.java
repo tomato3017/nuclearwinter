@@ -1,26 +1,30 @@
 package net.tomatonet.nuclearwinter.staging;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.tomatonet.nuclearwinter.NuclearWinter;
+import net.tomatonet.nuclearwinter.radiation.RadiationSettings;
+import net.tomatonet.nuclearwinter.radiation.RadiationSource;
 
 public abstract class StageBase {
-    private String name;
-    private ResourceLocation dimKey;
+    private final StageSettings settings;
+    private final String name;
+    private final ResourceLocation dimKey;
+    private final StageController.STAGES stageType;
+    private final long worldTickStart;
+
     private long tickTime; //The time of the last tick
-    private StageController.STAGES stageType;
-    private long worldTickStart;
     private long ticksTillNextStage = 0;
 
-    //private double maxRadiation = RadiationConfig.MAX_RADIATION_LEVEL_PREAPOC;
+    //Stage Settings
 
-    //private RadChunkProcessor chunkProcessor = new RadChunkProcessor(maxRadiation);
-
-    public StageBase(String name, ResourceLocation dimKey, long worldTickStart, StageController.STAGES stageType) {
+    public StageBase(String name, ResourceLocation dimKey, long worldTickStart, StageSettings settings, StageController.STAGES stageType) {
         this.name = name;
         this.dimKey = dimKey;
         this.worldTickStart = worldTickStart;
         this.stageType = stageType;
+        this.settings = settings;
     }
 
     public ResourceLocation getDimKey() {
@@ -31,9 +35,25 @@ public abstract class StageBase {
         return worldTickStart;
     }
 
-    public StageBase setWorldTickStart(long worldTickStart) {
-        this.worldTickStart = worldTickStart;
-        return this;
+    public void doPlayerTick(Player player){
+        NuclearWinter.LOGGER.trace("Player Tick {} for {}", name, dimKey.toString());
+        if (settings.isPlayerRadiationEnabled()) {
+            processPlayerRadiation(player);
+        }
+    }
+
+    private void processPlayerRadiation(Player player) {
+        var radSettings = new RadiationSettings().
+                setInitialRadLevel(settings.getRadiationLevel()).
+                setPlayerEffected(true).
+                setDegradeBlocks(false);
+
+        var radSource = new RadiationSource(radSettings);
+        var startPos = RadiationSource.getSkyPos(player.level(), player.blockPosition());
+        var endPos = RadiationSource.getPlayerPos(player);
+
+        var radReceived = radSource.emitRadiation(player.level(), startPos, endPos);
+        NuclearWinter.LOGGER.debug("Player Radiation {} for {}", radReceived, player.getName());
     }
 
     public void doStageTick(Level levelIn){
@@ -58,10 +78,10 @@ public abstract class StageBase {
 //
 //    public StageBase setMaxRadiation(double maxRadiation) {
 //        this.maxRadiation = maxRadiation;
+
 //        return this;
 
 //    }
-
     public boolean canDoNextStage(Level levelIn) {
         if (ticksTillNextStage != 0 && levelIn.getGameTime() - this.getWorldTickStart() >= ticksTillNextStage) {
             NuclearWinter.LOGGER.trace("Next stage tick count hit for {}", this.getDimKey().toString());
@@ -69,6 +89,10 @@ public abstract class StageBase {
         }
 
         return false;
+    }
+
+    public StageSettings getSettings() {
+        return settings;
     }
 
     public long getNextTick() {
@@ -82,6 +106,10 @@ public abstract class StageBase {
     public StageBase withTimeTillNextStage(long ticksTillNextStage) {
         this.ticksTillNextStage = ticksTillNextStage;
         return this;
+    }
+
+    public StageBase withDaysTillNextStage(long daysTillNextStage) {
+        return this.withTimeTillNextStage(daysTillNextStage * 24000);
     }
 
 

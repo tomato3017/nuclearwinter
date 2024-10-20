@@ -3,6 +3,7 @@ package net.tomatonet.nuclearwinter.staging;
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.tomatonet.nuclearwinter.radiation.RadiationSettings;
 import org.slf4j.Logger;
 
 public class StagePlaceholder extends StageBase{
@@ -11,7 +12,7 @@ public class StagePlaceholder extends StageBase{
 //    private final long worldTickStart;
 
     public StagePlaceholder(ResourceLocation dimKey, long worldTickStart) {
-        super("PLACEHOLDER", null, 0, StageController.STAGES.PREAPOC);
+        super("PLACEHOLDER", null, 0, new StageSettings.Builder().build(), StageController.STAGES.PREAPOC);
     }
 
     @Override
