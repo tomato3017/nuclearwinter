@@ -2,6 +2,7 @@ package net.tomatonet.nuclearwinter.staging;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
@@ -10,6 +11,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.tomatonet.nuclearwinter.Config;
 import net.tomatonet.nuclearwinter.NuclearWinter;
+import net.tomatonet.nuclearwinter.radiation.RadiationReceiver;
+import net.tomatonet.nuclearwinter.radiation.RadiationReceiverAttacher;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
@@ -75,13 +78,25 @@ public class StageController {
     }
 
     @SubscribeEvent
-    public void onCapabilityAttach(AttachCapabilitiesEvent<Level> event) {
+    public void onCapabilityAttachLevel(AttachCapabilitiesEvent<Level> event) {
         if (!event.getObject().isClientSide()) {
             if (!hasStageLevelSettings(event.getObject())) {
                 LOGGER.debug("Creating stage level settings for " + event.getObject().dimension().location());
                 StageLevelSettingsAttacher.attach(event);
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onCapabilityAttach(AttachCapabilitiesEvent<Player> event) {
+            if (!hasRadiationSettings(event.getObject())) {
+                LOGGER.debug("Creating player radiation settings for player " + event.getObject().getName());
+                RadiationReceiverAttacher.attach(event);
+            }
+    }
+
+    public boolean hasRadiationSettings(Player player) {
+        return player.getCapability(RadiationReceiver.INSTANCE, null).isPresent();
     }
 
     public boolean hasStageLevelSettings(Level level) {
