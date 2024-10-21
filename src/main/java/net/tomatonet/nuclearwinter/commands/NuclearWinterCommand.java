@@ -9,6 +9,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.tomatonet.nuclearwinter.NuclearWinter;
+import net.tomatonet.nuclearwinter.capabilities.CapabiltiesAttacher;
 import net.tomatonet.nuclearwinter.staging.IStageLevelSettings;
 import net.tomatonet.nuclearwinter.staging.StageBase;
 import net.tomatonet.nuclearwinter.staging.StageController;
@@ -53,7 +54,7 @@ public class NuclearWinterCommand {
     private static int runCmdStatus(CommandContext<CommandSourceStack> commandIn) {
         if (commandIn.getSource().getEntity() instanceof Player player) {
             if (NuclearWinter.stageController.isLoadedStage(player.level())) {
-                IStageLevelSettings stageSettings = NuclearWinter.stageController.getStageLevelSettings(player.level());
+                IStageLevelSettings stageSettings = CapabiltiesAttacher.getStageLevelSettings(player.level());
                 StageBase loadedStage = NuclearWinter.stageController.getActiveStage(player.level());
 
                 player.sendSystemMessage(Component.literal(getStageStatus(stageSettings, loadedStage)));
@@ -78,7 +79,7 @@ public class NuclearWinterCommand {
 
     private static int runCmdStop(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
         if (commandSourceStackCommandContext.getSource().getEntity() instanceof Player player) {
-            if (NuclearWinter.stageController.hasStageLevelSettings(player.level())) {
+            if (CapabiltiesAttacher.hasStageLevelSettings(player.level())) {
                 if (!NuclearWinter.stageController.isLoadedStage(player.level())) {
                     commandSourceStackCommandContext.getSource().sendFailure(Component.literal("Stage is not loaded!"));
                     return 0;
@@ -101,8 +102,8 @@ public class NuclearWinterCommand {
                 return 0;
             }
 
-            if (NuclearWinter.stageController.hasStageLevelSettings(player.level())) {
-                IStageLevelSettings stageSettings = NuclearWinter.stageController.getStageLevelSettings(player.level());
+            if (CapabiltiesAttacher.hasStageLevelSettings(player.level())) {
+                IStageLevelSettings stageSettings = CapabiltiesAttacher.getStageLevelSettings(player.level());
                 NuclearWinter.stageController.activateStaging(player.level(), stageSettings.getCurrentStage());
             } else {
                 //TODO Should we set this to ApocLow?

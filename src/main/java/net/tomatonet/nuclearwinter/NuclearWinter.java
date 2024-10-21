@@ -18,6 +18,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.tomatonet.nuclearwinter.capabilities.CapabiltiesAttacher;
 import net.tomatonet.nuclearwinter.commands.NuclearWinterCommand;
 import net.tomatonet.nuclearwinter.radiation.RadBlockRegistry;
 import net.tomatonet.nuclearwinter.staging.StageController;
@@ -82,6 +83,7 @@ public class NuclearWinter
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(stageController);
+        MinecraftForge.EVENT_BUS.register(CapabiltiesAttacher.class);
 
 //        // Register the item to a creative tab
 //        modEventBus.addListener(this::addCreative);

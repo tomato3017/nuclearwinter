@@ -5,6 +5,7 @@ import java.util.HashMap;
 //TODO: This is temporary, we need to make this all in a config
 public class RadiationConfig {
     public static final int RAD_MAX_LIGHT_LEVEL = 7;
+    public static final int RAD_DEATH_LEVEL = 50000;
 
     //Default Block resistances.
     public static final float BLOCK_RESIST_HARD_LOW = 16.0f;
@@ -25,7 +26,7 @@ public class RadiationConfig {
     public static final int MAX_RADIATION_LEVEL = 50000;
 
     //Where radiation emitted from the sky starts
-    public static final float PLAYER_NATURAL_RESISTANCE = 65;
+    public static final float PLAYER_NATURAL_RESISTANCE = 100;
 
     //Armor Resistances
     public static final float HAZMAT_BOOTS_RESISTANCE = 128;

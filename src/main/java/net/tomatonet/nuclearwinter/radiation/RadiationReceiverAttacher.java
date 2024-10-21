@@ -3,6 +3,7 @@ package net.tomatonet.nuclearwinter.radiation;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -44,7 +45,7 @@ public class RadiationReceiverAttacher {
         }
     }
 
-    public static void attach(final AttachCapabilitiesEvent<Player> event) {
+    public static void attach(final AttachCapabilitiesEvent<Entity> event) {
         final RadiationReceiverProvider provider = new RadiationReceiverAttacher.RadiationReceiverProvider();
 
         event.addCapability(RadiationReceiverProvider.IDENTIFIER, provider);

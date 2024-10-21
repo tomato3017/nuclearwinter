@@ -3,7 +3,11 @@ package net.tomatonet.nuclearwinter.staging;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.tomatonet.nuclearwinter.NuclearWinter;
+import net.tomatonet.nuclearwinter.capabilities.CapabiltiesAttacher;
+import net.tomatonet.nuclearwinter.radiation.IRadiationReceiver;
+import net.tomatonet.nuclearwinter.radiation.RadiationConfig;
 import net.tomatonet.nuclearwinter.radiation.RadiationSettings;
 import net.tomatonet.nuclearwinter.radiation.RadiationSource;
 
@@ -43,17 +47,26 @@ public abstract class StageBase {
     }
 
     private void processPlayerRadiation(Player player) {
-        var radSettings = new RadiationSettings().
-                setInitialRadLevel(settings.getRadiationLevel()).
-                setPlayerEffected(true).
-                setDegradeBlocks(false);
+        if(CapabiltiesAttacher.hasRadiationSettings(player)){
+            IRadiationReceiver playerRadCap = CapabiltiesAttacher.getRadiationSettings(player);
+            RadiationSettings radSettings = new RadiationSettings().
+                    setInitialRadLevel(settings.getRadiationLevel()).
+                    setPlayerEffected(true).
+                    setDegradeBlocks(false);
 
-        var radSource = new RadiationSource(radSettings);
-        var startPos = RadiationSource.getSkyPos(player.level(), player.blockPosition());
-        var endPos = RadiationSource.getPlayerPos(player);
+            RadiationSource radSource = new RadiationSource(radSettings);
+            Vec3 startPos = RadiationSource.getSkyPos(player.level(), player.blockPosition());
+            Vec3 endPos = RadiationSource.getPlayerPos(player);
 
-        var radReceived = radSource.emitRadiation(player.level(), startPos, endPos);
-        NuclearWinter.LOGGER.debug("Player Radiation {} for {}", radReceived, player.getName());
+            float radReceived = radSource.emitRadiation(player.level(), startPos, endPos);
+            playerRadCap.addRads(radReceived);
+            float playerRads = playerRadCap.getRads();
+            if (playerRads > RadiationConfig.MAX_RADIATION_LEVEL){
+                player.kill(); //TODO replace with radiation effect that kills quickly
+            }
+
+            NuclearWinter.LOGGER.debug("Player Radiation {} for {}. Total Rads: {}", radReceived, player.getName(), playerRads);
+        }
     }
 
     public void doStageTick(Level levelIn){

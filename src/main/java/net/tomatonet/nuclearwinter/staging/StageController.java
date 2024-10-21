@@ -11,6 +11,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.tomatonet.nuclearwinter.Config;
 import net.tomatonet.nuclearwinter.NuclearWinter;
+import net.tomatonet.nuclearwinter.capabilities.CapabiltiesAttacher;
 import net.tomatonet.nuclearwinter.radiation.RadiationReceiver;
 import net.tomatonet.nuclearwinter.radiation.RadiationReceiverAttacher;
 import org.jetbrains.annotations.NotNull;
@@ -49,8 +50,8 @@ public class StageController {
     }
 
     public void activateStaging(Level level, STAGES stageType) {
-        if (!level.isClientSide() && hasStageLevelSettings(level)) {
-            IStageLevelSettings stageLevelSettings = getStageLevelSettings(level);
+        if (!level.isClientSide() && CapabiltiesAttacher.hasStageLevelSettings(level)) {
+            IStageLevelSettings stageLevelSettings = CapabiltiesAttacher.getStageLevelSettings(level);
             LOGGER.debug("Activating staging for " + level.dimension().location());
 
             stageLevelSettings.setActive(true);
@@ -65,8 +66,8 @@ public class StageController {
     }
 
     public void deactivateStaging(Level level) {
-        if (!level.isClientSide() && hasStageLevelSettings(level)) {
-            IStageLevelSettings stageLevelSettings = getStageLevelSettings(level);
+        if (!level.isClientSide() && CapabiltiesAttacher.hasStageLevelSettings(level)) {
+            IStageLevelSettings stageLevelSettings = CapabiltiesAttacher.getStageLevelSettings(level);
             LOGGER.debug("Deactivating staging for " + level.dimension().location());
 
             stageLevelSettings.setActive(false);
@@ -75,37 +76,6 @@ public class StageController {
         }
 
         throw new IllegalStateException("Level is client side or does not have stage level settings");
-    }
-
-    @SubscribeEvent
-    public void onCapabilityAttachLevel(AttachCapabilitiesEvent<Level> event) {
-        if (!event.getObject().isClientSide()) {
-            if (!hasStageLevelSettings(event.getObject())) {
-                LOGGER.debug("Creating stage level settings for " + event.getObject().dimension().location());
-                StageLevelSettingsAttacher.attach(event);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void onCapabilityAttach(AttachCapabilitiesEvent<Player> event) {
-            if (!hasRadiationSettings(event.getObject())) {
-                LOGGER.debug("Creating player radiation settings for player " + event.getObject().getName());
-                RadiationReceiverAttacher.attach(event);
-            }
-    }
-
-    public boolean hasRadiationSettings(Player player) {
-        return player.getCapability(RadiationReceiver.INSTANCE, null).isPresent();
-    }
-
-    public boolean hasStageLevelSettings(Level level) {
-        return level.getCapability(StageLevelSettings.INSTANCE, null).isPresent();
-    }
-
-    public IStageLevelSettings getStageLevelSettings(Level level) {
-        return level.getCapability(StageLevelSettings.INSTANCE, null).
-                orElseThrow(() -> new IllegalStateException("Stage level settings not found"));
     }
 
     private StageBase getCurrentStageFromWorld(Level level, IStageLevelSettings stageLevelSettings) throws InvalidClassException {
@@ -129,11 +99,11 @@ public class StageController {
         LOGGER.debug("World loading");
 
         if (!event.getLevel().isClientSide() && event.getLevel() instanceof Level level) {
-            if (!hasStageLevelSettings(level)) {
+            if (!CapabiltiesAttacher.hasStageLevelSettings(level)) {
                 LOGGER.warn("Stage level settings not found for " + level.dimension().location());
                 return;
             }
-            IStageLevelSettings stageLevelSettings = getStageLevelSettings(level);
+            IStageLevelSettings stageLevelSettings = CapabiltiesAttacher.getStageLevelSettings(level);
             if (!stageLevelSettings.isActive()) {
                 LOGGER.debug("Staging not active for " + level.dimension().location());
                 return;
