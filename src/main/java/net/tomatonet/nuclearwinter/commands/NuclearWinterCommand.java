@@ -6,8 +6,16 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.chunk.PalettedContainer;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.tomatonet.nuclearwinter.NuclearWinter;
 import net.tomatonet.nuclearwinter.capabilities.CapabiltiesAttacher;
 import net.tomatonet.nuclearwinter.staging.IStageLevelSettings;
@@ -57,7 +65,7 @@ public class NuclearWinterCommand {
                 IStageLevelSettings stageSettings = CapabiltiesAttacher.getStageLevelSettings(player.level());
                 StageBase loadedStage = NuclearWinter.stageController.getActiveStage(player.level());
 
-                player.sendSystemMessage(Component.literal(getStageStatus(stageSettings, loadedStage)));
+                player.sendSystemMessage(Component.literal(getStageStatus(stageSettings, loadedStage, player)));
             } else {
                 player.sendSystemMessage(Component.literal("Staging is not active!"));
             }
@@ -67,13 +75,14 @@ public class NuclearWinterCommand {
         return 0;
     }
 
-    private static @NotNull String getStageStatus(IStageLevelSettings stageSettings, StageBase loadedStage) {
+    private static @NotNull String getStageStatus(IStageLevelSettings stageSettings, StageBase loadedStage, Player player) {
         StringBuilder sBuilder = new StringBuilder();
         sBuilder.append(String.format("Staging is active! Current stage: %s\n", stageSettings.getCurrentStage().name()));
         sBuilder.append(String.format("Stage type: %s\n", loadedStage.getStageType().name()));
         sBuilder.append(String.format("Stage name: %s\n", loadedStage.getName()));
         sBuilder.append(String.format("Stage dim key: %s\n", loadedStage.getDimKey()));
         sBuilder.append(String.format("Stage world tick start: %s\n", loadedStage.getWorldTickStart()));
+        sBuilder.append(String.format("Ticks till next stage: %s\n", loadedStage.getTicksLeftTillNextStage(player.level())));
         return sBuilder.toString();
     }
 

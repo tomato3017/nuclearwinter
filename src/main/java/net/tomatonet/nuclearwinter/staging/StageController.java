@@ -1,14 +1,22 @@
 package net.tomatonet.nuclearwinter.staging;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.chunk.PalettedContainer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.tomatonet.nuclearwinter.Config;
 import net.tomatonet.nuclearwinter.NuclearWinter;
 import net.tomatonet.nuclearwinter.capabilities.CapabiltiesAttacher;
@@ -84,12 +92,10 @@ public class StageController {
         long worldTickStart = stageLevelSettings.getStartWorldTime();
 
         return switch (stageLevelSettings.getCurrentStage()) {
-            case PREAPOC -> new StagePreapoc(dimKey.location(), worldTickStart).
-                    withDaysTillNextStage(Config.DAYS_BEFORE_APOCALYPSE.get());
-            case APOCLOW -> new StageApocLow(dimKey.location(), worldTickStart).
-                    withDaysTillNextStage(Config.DAYS_APOCALYPSE_LOW.get());
-            case APOCMED -> new StagePlaceholder(dimKey.location(), worldTickStart);
-            case APOCHIGH -> new StagePlaceholder(dimKey.location(), worldTickStart);
+            case PREAPOC -> new StagePreapoc(dimKey.location(), worldTickStart);
+            case APOCLOW -> new StageApocLow(dimKey.location(), worldTickStart);
+            case APOCMED -> new StageApocMedium(dimKey.location(), worldTickStart);
+            case APOCHIGH -> new StageApocHigh(dimKey.location(), worldTickStart);
             case POSTAPOC -> new StagePlaceholder(dimKey.location(), worldTickStart);
         };
     }

@@ -1,17 +1,13 @@
 package net.tomatonet.nuclearwinter.radiation;
 
 public class RadiationSettings {
-
     private boolean playerEffected = false;
     private boolean degradeBlocks = true;
     private boolean blockLightDegradation = RadiationConfig.RAD_BLOCK_LIGHT_DEGRADE;
     private boolean stopOnDegradation = false;
 
-    private float initialRadLevel = 0; //TODO: Configify this
+    private float initialRadLevel = 0;
 
-    public RadiationSettings() {
-        this.setInitialRadLevel(RadiationConfig.MAX_RADIATION_LEVEL);
-    }
 
     public boolean isPlayerEffected() {
         return playerEffected;

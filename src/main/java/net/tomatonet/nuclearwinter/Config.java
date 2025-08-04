@@ -46,6 +46,14 @@ public class Config
             .comment("Number of days the apocalypse will last on low intensity")
             .defineInRange("daysApocalypseLow", 7, 1, Integer.MAX_VALUE);
 
+    public static final ForgeConfigSpec.IntValue DAYS_APOCALYPSE_MED = BUILDER
+            .comment("Number of days the apocalypse will last on medium intensity")
+            .defineInRange("daysApocalypseMed", 7, 1, Integer.MAX_VALUE);
+
+//    public static final ForgeConfigSpec.IntValue DAYS_APOCALYPSE_HIGH = BUILDER
+//            .comment("Number of days the apocalypse will last on high intensity")
+//            .defineInRange("daysApocalypseHigh", 7, 1, Integer.MAX_VALUE);
+
     public static final ForgeConfigSpec.BooleanValue DEBUG_LOGGING = BUILDER
             .comment("Enable debug logging")
             .define("debugLogging", false);

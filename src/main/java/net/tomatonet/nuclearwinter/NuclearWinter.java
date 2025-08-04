@@ -2,6 +2,9 @@ package net.tomatonet.nuclearwinter;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
@@ -32,8 +35,7 @@ import java.util.List;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(NuclearWinter.MODID)
-public class NuclearWinter
-{
+public class NuclearWinter {
     // Define mod id in a common place for everything to reference
     public static final String MODID = "nuclearwinter";
     // Directly reference a slf4j logger
@@ -65,13 +67,12 @@ public class NuclearWinter
 //                output.accept(EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
 //            }).build());
 
-    public NuclearWinter()
-    {
+    public NuclearWinter() {
         instance = this;
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         // Register the commonSetup method for modloading
-        modEventBus.addListener(this::commonSetup);
+        // modEventBus.addListener(this::commonSetup);
 
 //        // Register the Deferred Register to the mod event bus so blocks get registered
 //        BLOCKS.register(modEventBus);
@@ -93,20 +94,14 @@ public class NuclearWinter
     }
 
     @SubscribeEvent
-    public void onServerStarting(final ServerStartingEvent event)
-    {
+    public void onServerStarting(final ServerStartingEvent event) {
         LOGGER.info("Loading radiation settings from file");
         RadBlockRegistry.loadSettingsFromFile();
     }
 
-    private void commonSetup(final FMLCommonSetupEvent event)
-    {
-    }
-
 
     @SubscribeEvent
-    public void onCommandRegister(RegisterCommandsEvent event)
-    {
+    public void onCommandRegister(RegisterCommandsEvent event) {
         // Register commands here
         LOGGER.debug("Registering commands");
         NuclearWinterCommand.register(event.getDispatcher());
@@ -114,11 +109,9 @@ public class NuclearWinter
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static class ClientModEvents
-    {
+    public static class ClientModEvents {
         @SubscribeEvent
-        public static void onClientSetup(FMLClientSetupEvent event)
-        {
+        public static void onClientSetup(FMLClientSetupEvent event) {
             // Some client setup code
             LOGGER.info("HELLO FROM CLIENT SETUP");
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
