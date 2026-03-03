@@ -135,7 +135,6 @@ public class NWDebugHooks {
                     }
                 }
             }
-            chunk.setUnsaved(true);
         }
 
 
