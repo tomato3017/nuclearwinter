@@ -48,19 +48,27 @@ public abstract class StageBase {
         }
     }
 
-    private void processPlayerRadiation(Player player) {
+    protected void processPlayerRadiation(Player player) {
         if(CapabiltiesAttacher.hasRadiationSettings(player)){
             IRadiationReceiver playerRadCap = CapabiltiesAttacher.getRadiationSettings(player);
             RadiationSettings radSettings = new RadiationSettings().
                     setInitialRadLevel(settings.getRadiationLevel()).
                     setPlayerEffected(true).
-                    setDegradeBlocks(false);
+                    setDegradeBlocks(settings.isBlockDegradationEnabled());
 
             RadiationSource radSource = new RadiationSource(radSettings);
             Vec3 startPos = RadiationSource.getSkyPos(player.level(), player.blockPosition());
             Vec3 endPos = RadiationSource.getPlayerPos(player);
 
             float radReceived = radSource.emitRadiation(player.level(), startPos, endPos);
+
+            // Apply radiation decay when player is in a safe zone
+            if (radReceived == 0 && settings.isPlayerRadDecayEnabled() && playerRadCap.getRads() > 0) {
+                float decayAmount = settings.getPlayerRadDecayRate();
+                float newRads = Math.max(0, playerRadCap.getRads() - decayAmount);
+                playerRadCap.setRads(newRads);
+            }
+
             playerRadCap.addRads(radReceived);
             float playerRads = playerRadCap.getRads();
             applyEffects(player, playerRads);

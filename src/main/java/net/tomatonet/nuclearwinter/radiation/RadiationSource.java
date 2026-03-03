@@ -107,7 +107,7 @@ public class RadiationSource {
                         degradedBlockState = Blocks.AIR.defaultBlockState();
                     }
                     level.setBlock(currentBlockPos,degradedBlockState,3);
-                    if (radResist.stopOnDegradation() || radSettings.isDegradeBlocks()) {
+                    if (radResist.stopOnDegradation()) {
                         return 0;
                     }
                 }

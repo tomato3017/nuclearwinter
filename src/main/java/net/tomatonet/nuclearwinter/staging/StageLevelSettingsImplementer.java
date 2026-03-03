@@ -4,7 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 
 public class StageLevelSettingsImplementer implements IStageLevelSettings {
 
-    private StageController.STAGES currentStage = StageController.STAGES.PREAPOC;
+    private StageController.STAGES currentStage = StageController.STAGES.CALM;
     private boolean isActive = false;
     private long startWorldTick=0;
 
@@ -52,7 +52,13 @@ public class StageLevelSettingsImplementer implements IStageLevelSettings {
         if (!nbt.contains("currentStage")) {
             throw new IllegalArgumentException("Missing 'currentStage' in NBT data");
         }
-        this.currentStage = StageController.STAGES.valueOf(nbt.getString("currentStage"));
+
+        String stageName = nbt.getString("currentStage");
+        try {
+            this.currentStage = StageController.STAGES.valueOf(stageName);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Unknown stage name in NBT: " + stageName);
+        }
 
         if (!nbt.contains("isActive")) {
             throw new IllegalArgumentException("Missing 'isActive' in NBT data");

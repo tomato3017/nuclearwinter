@@ -1,27 +1,16 @@
 package net.tomatonet.nuclearwinter.staging;
 
-import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.BiomeManager;
-import net.minecraft.world.level.biome.Biomes;
-import net.minecraft.world.level.chunk.PalettedContainer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.tomatonet.nuclearwinter.Config;
 import net.tomatonet.nuclearwinter.NuclearWinter;
 import net.tomatonet.nuclearwinter.capabilities.CapabiltiesAttacher;
-import net.tomatonet.nuclearwinter.radiation.RadiationReceiver;
-import net.tomatonet.nuclearwinter.radiation.RadiationReceiverAttacher;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
@@ -87,16 +76,15 @@ public class StageController {
     }
 
     private StageBase getCurrentStageFromWorld(Level level, IStageLevelSettings stageLevelSettings) throws InvalidClassException {
-        ResourceKey<Level> dimKey = level.dimension(); //Get the dimension
+        ResourceKey<Level> dimKey = level.dimension();
 
         long worldTickStart = stageLevelSettings.getStartWorldTime();
 
         return switch (stageLevelSettings.getCurrentStage()) {
-            case PREAPOC -> new StagePreapoc(dimKey.location(), worldTickStart);
-            case APOCLOW -> new StageApocLow(dimKey.location(), worldTickStart);
-            case APOCMED -> new StageApocMedium(dimKey.location(), worldTickStart);
-            case APOCHIGH -> new StageApocHigh(dimKey.location(), worldTickStart);
-            case POSTAPOC -> new StagePlaceholder(dimKey.location(), worldTickStart);
+            case CALM -> new StageCalm(dimKey.location(), worldTickStart);
+            case FALLOUT -> new StageFallout(dimKey.location(), worldTickStart);
+            case WASTELAND -> new StageWasteland(dimKey.location(), worldTickStart);
+            case RECLAMATION -> new StageReclamation(dimKey.location(), worldTickStart);
         };
     }
 
@@ -160,8 +148,6 @@ public class StageController {
     private void tickStage(StageBase stage, Level level) {
         stage.doStageTick(level);
 
-        //Were going to put the next stage logic here,
-        //it'll be locked to the stage tick itself but stop from being called every world tick
         if (stage.canDoNextStage(level)) {
             LOGGER.debug("Can do next stage for {}", stage.getName());
             LOGGER.debug("Finalizing stage {}", stage.getName());
@@ -188,7 +174,7 @@ public class StageController {
     }
 
     public enum STAGES {
-        PREAPOC(0), APOCLOW(1), APOCMED(2), APOCHIGH(3), POSTAPOC(4);
+        CALM(0), FALLOUT(1), WASTELAND(2), RECLAMATION(3);
 
         private final static HashMap<Integer, STAGES> map = new HashMap<>();
 
@@ -211,6 +197,7 @@ public class StageController {
             }
             return map.get(stageNum);
         }
+
 
         public int getValue() {
             return value;

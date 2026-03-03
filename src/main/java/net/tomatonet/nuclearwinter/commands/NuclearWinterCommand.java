@@ -116,7 +116,7 @@ public class NuclearWinterCommand {
                 NuclearWinter.stageController.activateStaging(player.level(), stageSettings.getCurrentStage());
             } else {
                 //TODO Should we set this to ApocLow?
-                NuclearWinter.stageController.activateStaging(player.level(), StageController.STAGES.PREAPOC);
+                NuclearWinter.stageController.activateStaging(player.level(), StageController.STAGES.CALM);
             }
             player.sendSystemMessage(Component.literal("Staging activated!"));
             return Command.SINGLE_SUCCESS;

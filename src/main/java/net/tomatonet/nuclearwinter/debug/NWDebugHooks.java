@@ -11,11 +11,14 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.PalettedContainer;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -113,19 +116,19 @@ public class NWDebugHooks {
     }
 
     private static int runTest(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
-        if (commandSourceStackCommandContext.getSource().getEntity() instanceof Player player) {
-            var level = player.level();
-            var chunk = level.getChunkAt(player.blockPosition());
+        if (commandSourceStackCommandContext.getSource().getEntity() instanceof Player player
+                && player.level() instanceof ServerLevel serverLevel) {
+            LevelChunk chunk = serverLevel.getChunkAt(player.blockPosition());
 
-            var seaLevel = new BlockPos(player.blockPosition().getX(), 64, player.blockPosition().getZ());
-            int surfaceSectionIndex = level.getSectionIndex(seaLevel.getY());
+            int surfaceSectionIndex = serverLevel.getSectionIndex(64);
 
-            for (int currentSec = level.getMaxSection(); currentSec > surfaceSectionIndex; currentSec--) {
-                PalettedContainer<Holder<Biome>> biomes = chunk.getSection(currentSec).getBiomes().recreate();
+            ResourceKey<Biome> newBiomeKey = ResourceKey.create(Registries.BIOME,
+                    new ResourceLocation("minecraft:snowy_taiga"));
+            Holder<Biome> newBiomeHolder = serverLevel.registryAccess().registryOrThrow(Registries.BIOME).getHolderOrThrow(newBiomeKey);
 
-                ResourceKey<Biome> newBiomeKey = ResourceKey.create(ForgeRegistries.Keys.BIOMES,
-                        new ResourceLocation("minecraft:snowy_taiga"));
-                Holder<Biome> newBiomeHolder = level.registryAccess().registryOrThrow(ForgeRegistries.Keys.BIOMES).getHolderOrThrow(newBiomeKey);
+            for (int currentSec = serverLevel.getMaxSection() - 1; currentSec > surfaceSectionIndex; currentSec--) {
+                PalettedContainer<Holder<Biome>> biomes =
+                        (PalettedContainer<Holder<Biome>>) chunk.getSection(currentSec).getBiomes();
 
                 for (int y = 0; y < 4; y++) {
                     for (int x = 0; x < 4; x++) {
@@ -135,8 +138,12 @@ public class NWDebugHooks {
                     }
                 }
             }
-        }
 
+            chunk.setUnsaved(true);
+            serverLevel.getChunkSource().chunkMap.getPlayers(chunk.getPos(), false)
+                    .forEach(p -> p.connection.send(
+                            new ClientboundLevelChunkWithLightPacket(chunk, serverLevel.getLightEngine(), null, null)));
+        }
 
         return Command.SINGLE_SUCCESS;
     }

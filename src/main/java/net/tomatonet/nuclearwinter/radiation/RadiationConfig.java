@@ -15,10 +15,10 @@ public class RadiationConfig {
     public static final float RADIATION2_RAD_LEVEL = RAD_KILL_LEVEL *0.2f;
     public static final float RADIATION1_RAD_LEVEL = RAD_KILL_LEVEL *0.05f;
 
-    //Max radiation allowed to be emitted
-    public static final float RADIATION_EMIT_LEVEL_APOCLOW = 1000.0f;
-    public static final float RADIATION_EMIT_LEVEL_APOCMED = 5000.0f;
-    public static final float RADIATION_EMIT_LEVEL_APOCHIGH = 10000.0f;
+    //Max radiation allowed to be emitted per stage
+    public static final float RADIATION_EMIT_LEVEL_FALLOUT = 2000.0f;
+    public static final float RADIATION_EMIT_LEVEL_WASTELAND = 8000.0f;
+    public static final float RADIATION_EMIT_LEVEL_RECLAMATION = 8000.0f; // Starting level, decays over time
 
     //Where radiation emitted from the sky starts
     public static final float PLAYER_NATURAL_RESISTANCE = 100;
@@ -28,7 +28,7 @@ public class RadiationConfig {
     public static final float HAZMAT_HELMET_RESISTANCE = 128;
     public static final float HAZMAT_LEGS_RESISTANCE = 128;
     public static final float HAZMAT_SUIT_RESISTANCE = 128;
-    public static final double MAX_RADIATION_LEVEL_PREAPOC = 512;
+    public static final double MAX_RADIATION_LEVEL_CALM = 512;
     public static final int CHUNKPROC_CHUNK_PER_TICK = 40;
     public static final int CHUNKPROC_BLOCKSTATIC_PER_TICK = 1;
     public static final int CHUNKPROC_BLOCKRANDOM_PER_TICK = 20;
